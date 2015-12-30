@@ -2,6 +2,8 @@ const htmlparser = require("htmlparser2");
 const state = require("./state");
 const attrParser = require("./attributes");
 const expr = require("./expression");
+const strip = require("./strip-elmx");
+const R = require("ramda");
 
 const textRegex = /^(\()?=/;
 const whitespace = /^\s*$/;
@@ -30,6 +32,10 @@ function parseExpression(text) {
   }).join('');
 }
 
+function enableModules(content) {
+  return content.replace(/--(import Html)/g, "$1");
+}
+
 function parse(elmx) {
   var elm = [];
 
@@ -55,9 +61,11 @@ function parse(elmx) {
   parser.write(elmx);
   parser.end();
 
-  return elm.join('');
+  return elm.join("");
 }
 
-module.exports = {
-    parse
-}
+module.exports = R.compose(
+  parse,
+  strip,
+  enableModules
+);

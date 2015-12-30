@@ -1,8 +1,0 @@
-view : Address Action -> Model -> Html
-view address model =
-    <div>
-      {field "text" address Name "User Name" model.name}
-      {field "password" address Password "Password" model.password}
-      {field "password" address PasswordAgain "Re-enter Password" model.passwordAgain}
-      <div style={fieldNameStyle "300px"}>{validationMessage}</div>
-    </div>

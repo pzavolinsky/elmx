@@ -4,6 +4,8 @@ var htmlparser = require("htmlparser2");
 var state = require("./state");
 var attrParser = require("./attributes");
 var expr = require("./expression");
+var strip = require("./strip-elmx");
+var R = require("ramda");
 
 var textRegex = /^(\()?=/;
 var whitespace = /^\s*$/;
@@ -28,6 +30,10 @@ function parseExpression(text) {
 
     return prefix + (ex.expr.match(textRegex) ? "Html.text " + ex.expr.replace(textRegex, "$1") : ex.expr);
   }).join('');
+}
+
+function enableModules(content) {
+  return content.replace(/--(import Html)/g, "$1");
 }
 
 function parse(elmx) {
@@ -55,9 +61,7 @@ function parse(elmx) {
   parser.write(elmx);
   parser.end();
 
-  return elm.join('');
+  return elm.join("");
 }
 
-module.exports = {
-  parse: parse
-};
+module.exports = R.compose(parse, strip, enableModules);
