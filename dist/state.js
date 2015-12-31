@@ -4,32 +4,43 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var R = require("ramda");
+
 var State = (function () {
-  function State() {
+  function State(parent) {
     _classCallCheck(this, State);
+
+    this.state = {
+      children: [],
+      attributes: []
+    };
   }
 
   _createClass(State, [{
     key: "isRoot",
     value: function isRoot() {
-      return !this.state;
+      return !this.state.parent;
     }
   }, {
-    key: "setHasChildren",
-    value: function setHasChildren(val) {
-      if (!this.state) return;
-      this.state.hasChildren = val;
+    key: "addExpression",
+    value: function addExpression(expr) {
+      this.state.children.push({ parent: this.state, expr: expr });
     }
   }, {
-    key: "isFirst",
-    value: function isFirst() {
-      return this.state && (!this.state.parent || !this.state.parent.hasChildren && this.state.parent.children.length == 1);
+    key: "addCode",
+    value: function addCode(code) {
+      this.addExpression({ code: code });
+    }
+  }, {
+    key: "get",
+    value: function get() {
+      return this.state;
     }
   }, {
     key: "enter",
-    value: function enter(name) {
-      var node = { name: name, children: [], parent: this.state };
-      if (this.state) this.state.children.push(node);
+    value: function enter(name, attributes) {
+      var node = { name: name, parent: this.state, children: [], attributes: attributes };
+      this.state.children.push(node);
       this.state = node;
     }
   }, {

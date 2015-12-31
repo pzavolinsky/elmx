@@ -54,26 +54,26 @@ view address model =
   let
     validationMessage =
       if model.password == model.passwordAgain then
-        elmx {- <span style="color: green">Passwords Match!</span> -}
+        <span style="color: green">Passwords Match!</span>
       else
-        elmx {- <span style="color: red">Passwords do not match :(</span> -}
+        <span style="color: red">Passwords do not match :(</span>
   in
-    elmx {- <div>
+    <div>
       {field "text" address Name "User Name" model.name}
       {field "password" address Password "Password" model.password}
       {field "password" address PasswordAgain "Re-enter Password" model.passwordAgain}
       <div style={fieldNameStyle "300px"}>{validationMessage}</div>
-    </div> -}
+    </div>
 
 field : String -> Address Action -> (String -> Action) -> String -> String -> Html
 field fieldType address toAction name content =
   let
     onInput = on "input" targetValue (\string -> Signal.message address (toAction string))
   in
-    elmx {- <div>
+    <div>
       <div style={fieldNameStyle "160px"}>{=name}</div>
       <input type={fieldType} placeholder={name} value={content} {onInput} />
-    </div> -}
+    </div>
 
 
 fieldNameStyle : String -> String

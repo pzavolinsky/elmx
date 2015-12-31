@@ -47,7 +47,6 @@ function parse(attrs) {
   var name;
   var value;
   var a = R.compose(
-    R.join(", "),
     R.map(mapAttribute),
     data => data.depth
       ? missingCloseBracket(data)

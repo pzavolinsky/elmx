@@ -56,7 +56,7 @@ function parse(attrs) {
   var depth = 0;
   var name;
   var value;
-  var a = R.compose(R.join(", "), R.map(mapAttribute), function (data) {
+  var a = R.compose(R.map(mapAttribute), function (data) {
     return data.depth ? missingCloseBracket(data) : data.items;
   }, R.reduce(reduceAttrs, { depth: 0, items: [] }), R.map(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 2);

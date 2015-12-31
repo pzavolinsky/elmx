@@ -57,12 +57,18 @@ view address model =
         elmx {- <span style="color: green">Passwords Match!</span> -}
       else
         elmx {- <span style="color: red">Passwords do not match :(</span> -}
+    colors =
+      [ elmx {-<span>red</span>-}
+      , elmx {-<span>green</span>-}
+      , elmx {-<span>blue</span>-}
+      ]
   in
     elmx {- <div>
       {field "text" address Name "User Name" model.name}
       {field "password" address Password "Password" model.password}
       {field "password" address PasswordAgain "Re-enter Password" model.passwordAgain}
       <div style={fieldNameStyle "300px"}>{validationMessage}</div>
+      {:colors}
     </div> -}
 
 field : String -> Address Action -> (String -> Action) -> String -> String -> Html

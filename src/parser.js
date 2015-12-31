@@ -3,34 +3,8 @@ const State = require("./state");
 const attrParser = require("./attributes");
 const expr = require("./expression");
 const strip = require("./strip-elmx");
+const generate = require("./generator");
 const R = require("ramda");
-
-const textRegex = /^(\()?=/;
-const whitespace = /^\s*$/;
-
-function parseExpression(state, text) {
-  var first = true;
-
-  return expr.parse(text).map(ex => {
-
-    if (ex.text && ex.text.match(whitespace)) return ex.text;
-
-    var prefix = "";
-    if (first) {
-      first = false;
-    } else {
-      prefix = ", ";
-    }
-
-    state.setHasChildren(true);
-
-    if (ex.text) return prefix + 'Html.text "' + ex.text + '"';
-
-    return prefix + (ex.expr.match(textRegex)
-      ? "Html.text " + ex.expr.replace(textRegex, "$1")
-      : ex.expr);
-  }).join('');
-}
 
 function enableModules(content) {
   return content.replace(/--(import Html)/g, "$1");
@@ -38,24 +12,27 @@ function enableModules(content) {
 
 function parse(elmx) {
   const state = new State();
+  // let padding = "";
 
-  var elm = [];
-
-  var parser = new htmlparser.Parser({
+  let parser = new htmlparser.Parser({
     onopentag: function(name, attrs) {
-      state.enter(name);
-      const a = attrParser(attrs);
-      if (!state.isFirst()) elm.push(", ");
-      elm.push("Html."+name+" [" + a + "] [");
+      state.enter(name, attrParser(attrs));
     },
     ontext: function(text) {
-      elm.push(state.isRoot() ? text : parseExpression(state, text));
+      // padding = R.last(text.match(/(?:^|[\r\n])([ \t]*)$/) || [""]);
+
+      if (state.isRoot()) {
+        state.addCode(text);
+        return;
+      }
+
+      R.forEach(ex => state.addExpression(ex), expr.parse(text));
     },
     onclosetag: function(tagname) {
-      elm.push("]");
       state.exit();
     }
-  }, {
+  },
+  {
     decodeEntities: true,
     lowerCaseTags: false,
     lowerCaseAttributeNames: false
@@ -63,7 +40,7 @@ function parse(elmx) {
   parser.write(elmx);
   parser.end();
 
-  return elm.join("");
+  return generate(state.get());
 }
 
 module.exports = R.compose(

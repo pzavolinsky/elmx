@@ -1,23 +1,32 @@
+const R = require("ramda")
+
 class State {
+  constructor(parent) {
+    this.state = {
+      children: [],
+      attributes: []
+    }
+  }
+
   isRoot() {
-    return !this.state;
-  }
-  setHasChildren(val) {
-    if (!this.state) return;
-    this.state.hasChildren = val;
+    return !this.state.parent;
   }
 
-  isFirst() {
-    return this.state && (
-      !this.state.parent
-      || !this.state.parent.hasChildren
-        && this.state.parent.children.length == 1
-    );
+  addExpression(expr) {
+    this.state.children.push({ parent: this.state, expr });
   }
 
-  enter(name) {
-    var node = { name: name, children: [], parent: this.state }
-    if (this.state) this.state.children.push(node);
+  addCode(code) {
+    this.addExpression({ code });
+  }
+
+  get() {
+    return this.state;
+  }
+
+  enter(name, attributes) {
+    var node = { name: name, parent: this.state, children: [], attributes };
+    this.state.children.push(node);
     this.state = node;
   }
 
