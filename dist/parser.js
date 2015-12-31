@@ -1,7 +1,7 @@
 "use strict";
 
 var htmlparser = require("htmlparser2");
-var state = require("./state");
+var State = require("./state");
 var attrParser = require("./attributes");
 var expr = require("./expression");
 var strip = require("./strip-elmx");
@@ -10,7 +10,7 @@ var R = require("ramda");
 var textRegex = /^(\()?=/;
 var whitespace = /^\s*$/;
 
-function parseExpression(text) {
+function parseExpression(state, text) {
   var first = true;
 
   return expr.parse(text).map(function (ex) {
@@ -24,7 +24,7 @@ function parseExpression(text) {
       prefix = ", ";
     }
 
-    state.setHasChildren();
+    state.setHasChildren(true);
 
     if (ex.text) return prefix + 'Html.text "' + ex.text + '"';
 
@@ -37,6 +37,8 @@ function enableModules(content) {
 }
 
 function parse(elmx) {
+  var state = new State();
+
   var elm = [];
 
   var parser = new htmlparser.Parser({
@@ -47,7 +49,7 @@ function parse(elmx) {
       elm.push("Html." + name + " [" + a + "] [");
     },
     ontext: function ontext(text) {
-      elm.push(state.isRoot() ? text : parseExpression(text));
+      elm.push(state.isRoot() ? text : parseExpression(state, text));
     },
     onclosetag: function onclosetag(tagname) {
       elm.push("]");

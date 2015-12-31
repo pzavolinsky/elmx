@@ -1,5 +1,5 @@
 const htmlparser = require("htmlparser2");
-const state = require("./state");
+const State = require("./state");
 const attrParser = require("./attributes");
 const expr = require("./expression");
 const strip = require("./strip-elmx");
@@ -8,7 +8,7 @@ const R = require("ramda");
 const textRegex = /^(\()?=/;
 const whitespace = /^\s*$/;
 
-function parseExpression(text) {
+function parseExpression(state, text) {
   var first = true;
 
   return expr.parse(text).map(ex => {
@@ -22,7 +22,7 @@ function parseExpression(text) {
       prefix = ", ";
     }
 
-    state.setHasChildren();
+    state.setHasChildren(true);
 
     if (ex.text) return prefix + 'Html.text "' + ex.text + '"';
 
@@ -37,6 +37,8 @@ function enableModules(content) {
 }
 
 function parse(elmx) {
+  const state = new State();
+
   var elm = [];
 
   var parser = new htmlparser.Parser({
@@ -47,7 +49,7 @@ function parse(elmx) {
       elm.push("Html."+name+" [" + a + "] [");
     },
     ontext: function(text) {
-      elm.push(state.isRoot() ? text : parseExpression(text));
+      elm.push(state.isRoot() ? text : parseExpression(state, text));
     },
     onclosetag: function(tagname) {
       elm.push("]");

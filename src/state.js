@@ -1,35 +1,29 @@
-var state = null;
+class State {
+  isRoot() {
+    return !this.state;
+  }
+  setHasChildren(val) {
+    if (!this.state) return;
+    this.state.hasChildren = val;
+  }
 
-function isRoot() {
-  return !state;
+  isFirst() {
+    return this.state && (
+      !this.state.parent
+      || !this.state.parent.hasChildren
+        && this.state.parent.children.length == 1
+    );
+  }
+
+  enter(name) {
+    var node = { name: name, children: [], parent: this.state }
+    if (this.state) this.state.children.push(node);
+    this.state = node;
+  }
+
+  exit() {
+    this.state = this.state.parent;
+  }
 }
 
-function setHasChildren() {
-  if (!state) return;
-  state.hasChildren = true;
-}
-
-function isFirst() {
-  return state && (
-    !state.parent
-    || !state.parent.hasChildren && state.parent.children.length == 1
-  );
-}
-
-function enter(name) {
-  var node = { name: name, children: [], parent: state }
-  if (state) state.children.push(node);
-  state = node;
-}
-
-function exit() {
-  state = state.parent;
-}
-
-module.exports =
-  { isRoot
-  , isFirst
-  , enter
-  , exit
-  , setHasChildren
-  };
+module.exports = State;
