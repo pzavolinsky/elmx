@@ -7,5 +7,6 @@ if (!path) {
   process.exit(-1);
 }
 
-var elm = parse(fs.readFileSync(path));
+var elmx = fs.readFileSync(path, { encoding: 'UTF-8' });
+var elm = parse(elmx);
 console.log(elm);
