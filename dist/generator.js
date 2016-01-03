@@ -2,12 +2,11 @@
 
 var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
 
+function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
+
 var R = require('ramda');
 
-function parseChildrenList(list, append) {
-
-  if (!append && list.length == 1) return '[' + list[0].list + ']';
-
+function groupChildren(list) {
   var _R$splitWhen = R.splitWhen(function (i) {
     return i.list;
   }, list);
@@ -16,18 +15,25 @@ function parseChildrenList(list, append) {
 
   var before = _R$splitWhen2[0];
 
-  var _R$splitWhen2$ = _slicedToArray(_R$splitWhen2[1], 2);
+  var _R$splitWhen2$ = _toArray(_R$splitWhen2[1]);
 
   var item = _R$splitWhen2$[0];
-  var after = _R$splitWhen2$[1];
 
-  if (!item) return '' + (append ? ' ++ [' : '') + before.join("");
+  var after = _R$splitWhen2$.slice(1);
 
-  var tail = after ? parseChildrenList(after, " ++ ") : "";
+  if (!item) return [before];
+  if (!after) return [before, item];
+  return [before, item].concat(groupChildren(after));
+}
 
-  var ret = before.length ? '' + (append ? ' ++ [' : '') + before.join("") + '] ++ ' + item.list + tail : '' + (append ? ' ++ ' : '') + item.list + tail;
+function parseChildrenList(list) {
+  var items = groupChildren(list).filter(function (group) {
+    return group.length !== 0;
+  }).map(function (group) {
+    return group.list || '[' + group.join('') + ']';
+  });
 
-  return !append ? '([' + ret + '])' : ret;
+  return items.length == 1 ? items[0] : '(' + items.join(' ++ ') + ')';
 }
 
 function parseChildren(children) {
@@ -80,5 +86,7 @@ function generate(state) {
 
   return 'Html.' + name + ' [' + attributes + '] ' + children;
 }
+
+generate.parseChildrenList = parseChildrenList;
 
 module.exports = generate;

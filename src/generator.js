@@ -1,24 +1,20 @@
 const R = require('ramda');
 
-function parseChildrenList(list, append) {
+function groupChildren(list) {
+  const [before, [item, ...after]] = R.splitWhen(i => i.list, list);
+  if (!item) return [before];
+  if (!after) return [before, item];
+  return [before, item].concat(groupChildren(after));
+}
 
-  if (!append && list.length == 1) return `[${list[0].list}]`;
+function parseChildrenList(list) {
+  const items = groupChildren(list)
+    .filter(group => group.length !== 0)
+    .map(group => group.list || `[${group.join('')}]`);
 
-  const [before, [item, after]] = R.splitWhen(i => i.list, list);
-
-  if (!item) return `${append ? ' ++ [' :''}${before.join("")}`;
-
-  const tail = after
-    ? parseChildrenList(after, " ++ ")
-    : "";
-
-  const ret = before.length
-    ? `${append ? ' ++ [' :''}${before.join("")}] ++ ${item.list}${tail}`
-    : `${append ? ' ++ ' :''}${item.list}${tail}`;
-
-  return (!append)
-    ? `([${ret}])`
-    : ret;
+  return items.length == 1
+    ? items[0]
+    : `(${items.join(' ++ ')})`;
 }
 
 function parseChildren(children) {
@@ -69,5 +65,7 @@ function generate(state) {
 
   return `Html.${name} [${attributes}] ${children}`;
 }
+
+generate.parseChildrenList = parseChildrenList;
 
 module.exports = generate;

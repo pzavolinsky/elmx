@@ -13,6 +13,10 @@ describe('expression', () => {
   parses('   {code}', [ { whitespace: '   ' }, { code: 'code' } ]);
   parses('{code}   ', [ { code: 'code' }, { whitespace: '   ' } ]);
 
+  parses('text{code}', [ { text: 'text' }, { code: 'code' } ]);
+  parses('{code}text', [ { code: 'code' }, { text: 'text' } ]);
+
+
   // Helpers
 
   function parsesA(what, key, expected) {

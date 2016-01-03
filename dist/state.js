@@ -48,6 +48,19 @@ var State = (function () {
     value: function exit() {
       this.state = this.state.parent;
     }
+  }, {
+    key: "dump",
+    value: function dump(node) {
+      var _this = this;
+
+      var padd = arguments.length <= 1 || arguments[1] === undefined ? "" : arguments[1];
+
+      if (!node) node = this.state;
+      if (node.expr) return padd + JSON.stringify(node.expr) + '\n';
+      return "" + padd + node.name + " [" + node.attributes.join(', ') + "]\n" + node.children.map(function (c) {
+        return _this.dump(c, padd + "  ");
+      }).join('');
+    }
   }]);
 
   return State;

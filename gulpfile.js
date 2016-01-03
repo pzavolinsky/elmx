@@ -3,6 +3,9 @@
 var gulp        = require('gulp');
 var babel       = require('gulp-babel');
 var jasmine     = require('gulp-jasmine');
+var minimist    = require('minimist');
+
+var options = minimist(process.argv.slice(2), {});
 
 gulp.task('default', ['build']);
 
@@ -17,6 +20,7 @@ gulp.task('watch', ['build'], function() {
 });
 
 gulp.task('test', ['build'], function () {
-  return gulp.src('./spec/**/*spec.js')
+  var src = options.only || './spec/**/*spec.js';
+  return gulp.src(src)
     .pipe(jasmine({verbose: true, includeStackTrace: true}));
 });

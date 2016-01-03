@@ -43,6 +43,8 @@ function parse(elmx) {
   parser.write(elmx);
   parser.end();
 
+  // console.log('ast', state.dump());
+
   return generate(state.get());
 }
 
