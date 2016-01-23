@@ -19,7 +19,7 @@ See [language-elmx](https://github.com/pzavolinsky/atom-language-elmx) for more 
 Emacs integration
 -----------------
 
-Sorry but currently there is no Emacs integration for `elmx`. You could check the [Gulp integration example](https://github.com/pzavolinsky/elmx/example) for an alternative workflow that runs `elmx` independently of your editor.
+Sorry but currently there is no Emacs integration for `elmx`. You could check the [Gulp integration example](https://github.com/pzavolinsky/elmx/tree/master/example) for an alternative workflow that runs `elmx` independently of your editor.
 
 On the flip side, if you are an Emacs fan then probably you are a hacker as well and could help with the integration. If you are up for it, check the [TextMate grammar file for elmx](https://github.com/pzavolinsky/atom-language-elmx/blob/master/grammars/elmx.cson). Also maybe you can hack (ehm, I mean *compose*) the existing linter and auto-complete Elm plugins like I did for the [language-elm Atom package](https://github.com/pzavolinsky/atom-language-elmx/blob/master/index.js).
 
@@ -31,7 +31,7 @@ Gulp integration
 ----------------
 This integration uses Gulp to monitor changes in `.elmx` files and pipes the file contents through the `elmx` parser to produce `.elm` files.
 
-See the full integration example in: [Gulp integration example](https://github.com/pzavolinsky/elmx/example)
+See the full integration example in: [Gulp integration example](https://github.com/pzavolinsky/elmx/tree/master/example)
 
 Library installation
 --------------------
