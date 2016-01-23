@@ -74,7 +74,7 @@ describe('parser', () => {
 
   it('understands child node expressions', () => {
     expectParsed(
-      `<span>, <i/></i></span>`
+      `<span>, <i/></span>`
     )
     .toEqual(
       `Html.span [] [Html.text ", ", Html.i [] []]`

@@ -6,8 +6,8 @@
   "scripts": {
     "test": "node_modules/.bin/gulp test"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Patricio Zavolinsky",
+  "license": "MIT",
   "dependencies": {
     "htmlparser2": "^3.9.0",
     "ramda": "^0.19.0"

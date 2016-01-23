@@ -11,6 +11,14 @@ elmx = Html.text ""
 main =
   StartApp.start { model = empty, view = view, update = update }
 
+main1 = <span class="error">Oops!</span>
+
+showMessage : String -> Html
+showMessage s = <span>{=s}</span>
+
+showError : String -> Html
+showError errorClass = <span class={errorClass}>Oops!</span>
+
 
 -- MODEL
 

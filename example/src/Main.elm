@@ -1,15 +1,23 @@
 module Main where
 import Html exposing (Html, Attribute, toElement)
---import Html.Attributes
+import Html.Attributes
 import Html.Events exposing (on, targetValue)
 import Signal exposing (Address)
 import StartApp.Simple as StartApp
 
-elmx : Html
-elmx = Html.text ""
+
+
 
 main =
   StartApp.start { model = empty, view = view, update = update }
+
+main1 = Html.span [Html.Attributes.attribute "class" "error"] [Html.text "Oops!"]
+
+showMessage : String -> Html
+showMessage s = Html.span [] [Html.text s]
+
+showError : String -> Html
+showError errorClass = Html.span [Html.Attributes.attribute "class" errorClass] [Html.text "Oops!"]
 
 
 -- MODEL
@@ -54,26 +62,26 @@ view address model =
   let
     validationMessage =
       if model.password == model.passwordAgain then
-        elmx {- <span style="color: green">Passwords Match!</span> -}
+        Html.span [Html.Attributes.attribute "style" "color: green"] [Html.text "Passwords Match!"]
       else
-        elmx {- <span style="color: red">Passwords do not match :(</span> -}
+        Html.span [Html.Attributes.attribute "style" "color: red"] [Html.text "Passwords do not match :("]
   in
-    elmx {- <div>
-      {field "text" address Name "User Name" model.name}
-      {field "password" address Password "Password" model.password}
-      {field "password" address PasswordAgain "Re-enter Password" model.passwordAgain}
-      <div style={fieldNameStyle "300px"}>{validationMessage}</div>
-    </div> -}
+    Html.div [] [
+      field "text" address Name "User Name" model.name
+      , field "password" address Password "Password" model.password
+      , field "password" address PasswordAgain "Re-enter Password" model.passwordAgain
+      , Html.div [Html.Attributes.attribute "style" (fieldNameStyle "300px")] [validationMessage]
+    ]
 
 field : String -> Address Action -> (String -> Action) -> String -> String -> Html
 field fieldType address toAction name content =
   let
     onInput = on "input" targetValue (\string -> Signal.message address (toAction string))
   in
-    elmx {- <div>
-      <div style={fieldNameStyle "160px"}>{=name}</div>
-      <input type={fieldType} placeholder={name} value={content} {onInput} />
-    </div> -}
+    Html.div [] [
+      Html.div [Html.Attributes.attribute "style" (fieldNameStyle "160px")] [Html.text name]
+      , Html.input [Html.Attributes.attribute "type" fieldType, Html.Attributes.attribute "placeholder" name, Html.Attributes.attribute "value" content, onInput] []
+    ]
 
 
 fieldNameStyle : String -> String
