@@ -136,7 +136,7 @@ main =
   in
     <div class="container">
       {title}
-      {=name} is the father or:
+      {=name} is the father of:
       <ul>{:lis}</ul>
     </div>
 ```

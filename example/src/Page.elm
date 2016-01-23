@@ -11,6 +11,6 @@ main =
   in
     Html.div [Html.Attributes.attribute "class" "container"] [
       title
-      , Html.text name, Html.text " is the father or:
+      , Html.text name, Html.text " is the father of:
       ", Html.ul [] lis
     ]
