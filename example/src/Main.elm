@@ -1,6 +1,6 @@
 module Main where
 import Html exposing (Html, Attribute, toElement)
---import Html.Attributes
+import Html.Attributes
 import Html.Events exposing (on, targetValue)
 import Signal exposing (Address)
 import StartApp.Simple as StartApp
@@ -10,15 +10,6 @@ elmx = Html.text ""
 
 main =
   StartApp.start { model = empty, view = view, update = update }
-
-main1 = Html.span [Html.Attributes.attribute "class" "error"] [Html.text "Oops!"]
-
-showMessage : String -> Html
-showMessage s = Html.span [] [Html.text s]
-
-showError : String -> Html
-showError errorClass = Html.span [Html.Attributes.attribute "class" errorClass] [Html.text "Oops!"]
-
 
 -- MODEL
 
