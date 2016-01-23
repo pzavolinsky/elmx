@@ -1,0 +1,6 @@
+dist/test*
+src
+spec
+example
+gulpfile.js
+*.tgz

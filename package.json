@@ -2,7 +2,7 @@
   "name": "elmx",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/parser.js",
   "scripts": {
     "test": "node_modules/.bin/gulp test"
   },
