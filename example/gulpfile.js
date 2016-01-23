@@ -1,21 +1,21 @@
 "use strict"
 
-var gulp = require('gulp');
+var gulp   = require('gulp');
 var insert = require('gulp-insert');
 var rename = require('gulp-rename');
-var elmx = require('../dist/parser');
+var elmx   = require('elmx');
 
-var src = './src/**/*.elmx'
+var src = './src'
 
 gulp.task('default', ['watch']);
 
 gulp.task('build', function(cb) {
-  return gulp.src(src)
+  return gulp.src(src + '/**/*.elmx')
     .pipe(insert.transform(elmx))
     .pipe(rename({extname: '.elm'}))
-    .pipe(gulp.dest('./dist'));
+    .pipe(gulp.dest(src));
 });
 
 gulp.task('watch', ['build'], function() {
-  return gulp.watch(src, ['build']);
+  return gulp.watch(src + '/**/*.elmx', ['build']);
 });

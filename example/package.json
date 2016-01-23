@@ -1,6 +1,8 @@
 {
   "devDependencies": {
+    "elmx": "file:///home/pzavolinsky/src/lab/elmx/elmx",
     "gulp": "^3.9.0",
-    "gulp-insert": "^0.5.0"
+    "gulp-insert": "^0.5.0",
+    "gulp-rename": "^1.2.2"
   }
 }

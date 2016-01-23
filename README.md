@@ -14,7 +14,24 @@ If you also have the Elm Atom packages installed you will get additional functio
  - If you have `language-elm`, you will get auto-complete.
  - If you have `linter-elm-make`, you will get `.elmx` to `.elm` compilation.
 
-See [language-elmx](TODO) for more details.
+See [language-elmx](https://github.com/pzavolinsky/atom-language-elmx) for more details.
+
+Emacs integration
+-----------------
+
+Sorry but currently there is no Emacs integration for `elmx`. You could check the [Gulp integration example](https://github.com/pzavolinsky/elmx/example) for an alternative workflow that runs `elmx` independently of your editor.
+
+On the flip side, if you are an Emacs fan then probably you are a hacker as well and could help with the integration. If you are up for it, check the [TextMate grammar file for elmx](https://github.com/pzavolinsky/atom-language-elmx/blob/master/grammars/elmx.cson). Also maybe you can hack (ehm, I mean *compose*) the existing linter and auto-complete Elm plugins like I did for the [language-elm Atom package](https://github.com/pzavolinsky/atom-language-elmx/blob/master/index.js).
+
+If you want to contribute with this or any other `elmx` integration let me know in an issue and I'll put the link here.
+
+
+
+Gulp integration
+----------------
+This integration uses Gulp to monitor changes in `.elmx` files and pipes the file contents through the `elmx` parser to produce `.elm` files.
+
+See the full integration example in: [Gulp integration example](https://github.com/pzavolinsky/elmx/example)
 
 Library installation
 --------------------
@@ -31,75 +48,6 @@ var elmxParser = require('elmx');
 var elmSource = elmxParser(elmxSource);
 ```
 
-Gulp integration
-----------------
-This integration uses Gulp to monitor changes in `.elmx` files and pipes the file contents through `elmx` to produce `.elm` files.
-
-```
-npm install --save-dev elmx gulp gulp-insert gulp-rename
-```
-
-`gulpfile.js`:
-
-```javascript
-"use strict"
-
-var gulp = require('gulp');
-var insert = require('gulp-insert');
-var rename = require('gulp-rename');
-var elmx = require('elmx');
-
-var src = './src/**/*.elmx'
-
-gulp.task('default', ['watch']);
-
-gulp.task('build', function(cb) {
-  return gulp.src(src)
-    .pipe(insert.transform(elmx))
-    .pipe(rename({extname: '.elm'}))
-    .pipe(gulp.dest('./dist'));
-});
-
-gulp.task('watch', ['build'], function() {
-  return gulp.watch(src, ['build']);
-});
-```
-
-`elm-package.json`:
-
-```javascript
-{
-  ...
-  "source-directories": [
-    "src",
-    "dist"
-  ],
-  ...
-}
-
-```
-
-`src/Main.elmx`:
-
-```elm
-import Html exposing (Html)
---import Html.Attributes
-
-main : Html
-main = <span>Hello, elmx!</span>
-```
-
-in a terminal, type:
-```shell
-gulp watch
-```
-
-in another terminal:
-```shell
-elm reactor
-```
-
-finally browse [http://localhost:8000/dist/Main.elm](http://localhost:8000/dist/Main.elm)
 
 Syntax
 ------
@@ -109,6 +57,9 @@ In the same spirit of JSX, `elmx` syntax allows HTML tags embedded in the Elm co
 For example:
 
 ```elm
+import Html
+import Html.Attributes
+
 main : Html
 main = <span>Hello, elmx!</span>
 ```
@@ -116,9 +67,15 @@ main = <span>Hello, elmx!</span>
 Translates to:
 
 ```elm
+import Html
+import Html.Attributes
+
 main : Html
 main = Html.span [] [Html.text "Hello, elmx!"]
 ```
+
+Note that for `elmx` to work you need to import both `Html` and `Html.Attributes`.
+
 
 Attributes can be specified with:
 
@@ -141,6 +98,10 @@ addBorder : Html -> Html
 addBorder s = <div class="border">{s}</div>
 ```
 
+Unlike JSX, `elmx` requires a few extensions to accommodate for Elm's types, namely:
+  - `{=text}`, where `text : String` (only required for element interpolation)
+  - `{:list}`, where `list : [Html]`
+
 Elm strings can be interpolated with:
 
 ```elm
@@ -158,13 +119,6 @@ makeList lis = <ul>{:lis}</ul>
 ```
 
 (note the `:` in `{:lis}`)
-
-Additionally, for `elmx` to work you need to import both `Html` and `Html.Attributes`:
-
-```elm
-import Html
-import Html.Attributes
-```
 
 All together:
 
@@ -186,3 +140,32 @@ main =
       <ul>{:lis}</ul>
     </div>
 ```
+
+Considerations, cool stuff, limitations and workarounds
+-------------------------------------------------------
+
+  * No runtime dependencies: `elmx` just takes Elm code embedded with HTML and produces vanilla `elm-html` code. This means that, other than suboptimal indentation (see below), once compiled into Elm, your original `.elmx` should look just like normal Elm code written in pure Elm.
+
+  * Symmetric code generation: a major goal of `elmx` is to generate the Elm code preserving the line numbers of the original `.elmx` file. This makes finding and fixing issues in your `.elmx` very easy since the line numbers reported by the Elm compiler match the line numbers in your `.elmx`.
+
+  * Non-compliant Elm indentation: because of the *symmetric code generation*, the Elm code produced does not comply with the Elm syntax guide.
+
+  * Easy to opt-out: since almost every Elm program is a valid `elmx` program, you can mix-and-match `elmx` code with traditional `elm-html` code. Even more, if at any point you decide that you want to stop using `elmx`, you can always take the generated `.elm` files, fix the indentation and you are good to go.
+
+  * Non-recursive interpolation: currently Elm code interpolated between `{` and `}` is not recursive (i.e. is a regular grammar not a CFG). This means that you cannot include curly brackets inside curly brackets. For example:
+
+    ```elm
+    -- BROKEN CODE
+    <ul>{:map (\s -> <li>{=s}</li>) items}</ul>
+    ```
+
+    Note that the interpolated code includes curly brackets and this is not supported. Fortunately this limitation is trivial to overcome with a `let` binding:
+
+    ```elm
+    let
+      lis = map (\s -> <li>{=s}</li>) items
+    in
+      <ul>{:lis}</ul>
+    ```
+
+  * Required whitespace around `<`: since `elmx` tries to parse HTML tags, valid Elm expressions that look like HTML tags will probably confuse the `elmx` parser. For this reason is best to include some whitespace around your `<` operators.

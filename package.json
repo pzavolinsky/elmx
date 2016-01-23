@@ -1,8 +1,22 @@
 {
   "name": "elmx",
-  "version": "1.0.0",
-  "description": "",
   "main": "dist/parser.js",
+  "version": "1.0.0",
+  "description": "A tiny precompiler that takes an Elm program with embedded HTML and desugars the HTML into elm-html syntax",
+  "keywords": [
+    "elm",
+    "embedded",
+    "html",
+    "elmx"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pzavolinsky/elmx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pzavolinsky/elmx/issues"
+  },
+  "homepage": "https://github.com/pzavolinsky/elmx",
   "scripts": {
     "test": "node_modules/.bin/gulp test"
   },
