@@ -90,4 +90,4 @@ In another terminal run:
 elm reactor
 ```
 
-Then browse http://localhost:8000/src/Hello.elm
+Then browse [http://localhost:8000/src/Hello.elm](http://localhost:8000/src/Hello.elm)
