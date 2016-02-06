@@ -78,13 +78,13 @@ describe('generator', () => {
           {
       	    parent: {},
       	    name: 'span',
-      	    attributes: [':attributes'],
+      	    attributes: ['Html.Attributes.attribute "id" "foo"'],
       	    children: []
           }
         ]
       })
       .toEqual(
-        'Html.span attributes []'
+        'Html.span [Html.Attributes.attribute "id" "foo"] []'
       );
   });
 
