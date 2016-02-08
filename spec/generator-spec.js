@@ -116,7 +116,7 @@ describe('generator', () => {
       ]
     })
     .toEqual(
-      'Html.span (List.concatMap identity [[Html.Attributes.attribute "id" "bar"], attributes]) []'
+      'Html.span ([Html.Attributes.attribute "id" "bar"] ++ attributes) []'
     );
   });
 });

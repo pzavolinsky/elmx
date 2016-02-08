@@ -52,15 +52,14 @@ function generateExpression(expr) {
 }
 
 function generateAttributeList(simple,compound) {
-  const attributes = `[${simple.join(", ")}]`;
-  if (compound.length == 0) {
-    return attributes;
-  } else if (compound.length == 1 && simple.length == 0) {
-    return compound[0];
-  } else {
-    const all = `${attributes}, ${compound.join(", ")}`;
-    return `(List.concatMap identity [${all}])`;
-  }
+  let all = [
+      `[${simple.join(", ")}]`,
+      ...compound
+  ];
+  if (!simple.length && compound.length) all = all.slice(1);
+  return (all.length == 1)
+    ? all[0]
+    : `(${all.join(" ++ ")})`;
 }
 
 function generate(state) {
@@ -72,8 +71,13 @@ function generate(state) {
   }
 
   const name = state.name;
-  const [compound,simple] = R.partition(x => x ? x.match(/^:.*/) : false, state.attributes);
-  const attributes = generateAttributeList(simple, compound.map(x => x.substr(1)));
+  const [compound,simple] = R.partition(x => x
+    ? x.match(/^:.*/)
+    : false,
+    state.attributes);
+  const attributes = generateAttributeList(
+    simple,
+    compound.map(x => x.substr(1)));
   const children = parseChildren(state.children);
   return `Html.${name} ${attributes} ${children}`;
 }
