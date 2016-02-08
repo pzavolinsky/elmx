@@ -91,6 +91,23 @@ showError : String -> Html
 showError errorClass = <span class={errorClass}>Oops!</span>
 ```
 
+Or:
+
+```elm
+showError : Html.Attribute -> Html
+showError errorAttr = <span {errorAttr}>Oops!</span>
+```
+
+Or:
+
+```elm
+showError : [Html.Attribute] -> Html
+showError errorAttrs = <span {:errorAttrs}>Oops!</span>
+```
+
+(note the `:` in `{:errorAttrs}`)
+
+
 Elm expressions can be interpolated into HTML with:
 
 ```elm
@@ -124,7 +141,7 @@ All together:
 
 ```elm
 import Html
-import Html.Attributes
+import Html.Attributes exposing (title, align)
 import List exposing (map)
 
 main : Html.Html
@@ -133,8 +150,12 @@ main =
     title = <h1>Hello</h1>
     name = "Homer"
     lis = map (\s -> <li>{=s}</li>) [ "Bart", "List", "Maggie" ]
+    commonAttrs =
+      [ title "common title"
+      , align "left"
+      ]
   in
-    <div class="container">
+    <div class="container" {:commonAttrs}>
       {title}
       {=name} is the father of:
       <ul>{:lis}</ul>

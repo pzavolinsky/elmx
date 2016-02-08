@@ -72,4 +72,51 @@ describe('generator', () => {
     );
   });
 
+  it('uses an attribute', () => {
+      expectGenerated({
+        children: [
+          {
+      	    parent: {},
+      	    name: 'span',
+      	    attributes: ['Html.Attributes.attribute "id" "foo"'],
+      	    children: []
+          }
+        ]
+      })
+      .toEqual(
+        'Html.span [Html.Attributes.attribute "id" "foo"] []'
+      );
+  });
+
+  it('uses an attribute list', () => {
+    expectGenerated({
+      children: [
+        {
+      	  parent: {},
+      	  name: 'span',
+      	  attributes: [':attributes'],
+      	  children: []
+      	}
+      ]
+    })
+    .toEqual(
+      'Html.span attributes []'
+    );
+  });
+
+  it('uses an attribute and an attribute list', () => {
+    expectGenerated({
+      children: [
+        {
+          parent: {},
+          name: 'span',
+          attributes: ['Html.Attributes.attribute "id" "bar"',':attributes'],
+          children: []
+        }
+      ]
+    })
+    .toEqual(
+      'Html.span ([Html.Attributes.attribute "id" "bar"] ++ attributes) []'
+    );
+  });
 });

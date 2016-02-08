@@ -51,6 +51,17 @@ function generateExpression(expr) {
   throw `Invalid expression: ${JSON.stringify(expr)}`
 }
 
+function generateAttributeList(simple,compound) {
+  let all = [
+      `[${simple.join(", ")}]`,
+      ...compound
+  ];
+  if (!simple.length && compound.length) all = all.slice(1);
+  return (all.length == 1)
+    ? all[0]
+    : `(${all.join(" ++ ")})`;
+}
+
 function generate(state) {
   const { expr } = state;
   if (expr) return generateExpression(expr);
@@ -60,10 +71,15 @@ function generate(state) {
   }
 
   const name = state.name;
-  const attributes = state.attributes.join(", ");
+  const [compound,simple] = R.partition(x => x
+    ? x.match(/^:.*/)
+    : false,
+    state.attributes);
+  const attributes = generateAttributeList(
+    simple,
+    compound.map(x => x.substr(1)));
   const children = parseChildren(state.children);
-
-  return `Html.${name} [${attributes}] ${children}`;
+  return `Html.${name} ${attributes} ${children}`;
 }
 
 generate.parseChildrenList = parseChildrenList;

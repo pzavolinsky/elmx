@@ -2,6 +2,8 @@
 
 var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
 
 var R = require('ramda');
@@ -71,6 +73,12 @@ function generateExpression(expr) {
   throw 'Invalid expression: ' + JSON.stringify(expr);
 }
 
+function generateAttributeList(simple, compound) {
+  var all = ['[' + simple.join(", ") + ']'].concat(_toConsumableArray(compound));
+  if (!simple.length && compound.length) all = all.slice(1);
+  return all.length == 1 ? all[0] : '(' + all.join(" ++ ") + ')';
+}
+
 function generate(state) {
   var expr = state.expr;
 
@@ -81,10 +89,21 @@ function generate(state) {
   }
 
   var name = state.name;
-  var attributes = state.attributes.join(", ");
-  var children = parseChildren(state.children);
 
-  return 'Html.' + name + ' [' + attributes + '] ' + children;
+  var _R$partition = R.partition(function (x) {
+    return x ? x.match(/^:.*/) : false;
+  }, state.attributes);
+
+  var _R$partition2 = _slicedToArray(_R$partition, 2);
+
+  var compound = _R$partition2[0];
+  var simple = _R$partition2[1];
+
+  var attributes = generateAttributeList(simple, compound.map(function (x) {
+    return x.substr(1);
+  }));
+  var children = parseChildren(state.children);
+  return 'Html.' + name + ' ' + attributes + ' ' + children;
 }
 
 generate.parseChildrenList = parseChildrenList;
