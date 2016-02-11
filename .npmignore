@@ -1,6 +1,9 @@
 dist/test*
+dist/bundle*
 src
 spec
 example
+cheatsheet
 gulpfile.js
 *.tgz
+index.html

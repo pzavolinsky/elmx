@@ -54,6 +54,8 @@ Syntax
 
 In the same spirit of JSX, `elmx` syntax allows HTML tags embedded in the Elm code and uses `{` and `}` to interpolate Elm code into the HTML.
 
+Check the [live cheatsheet](http://pzavolinsky.github.io/elmx) to play around with `elmx` directly in the browser
+
 For example:
 
 ```elm
