@@ -27,6 +27,11 @@ describe('parser', () => {
     );
   });
 
+  it('does not get confused by quotes in the text', () => {
+    expectParsed('main = <span>Hi "dude"!</span>')
+    .toEqual('main = Html.span [] [Html.text "Hi \\"dude\\"!"]');
+  });
+
   it('understands list expressions as children', () => {
     expectParsed(`main =
       let

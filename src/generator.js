@@ -45,7 +45,7 @@ function parseChildren(children) {
 
 function generateExpression(expr) {
   if (expr.code) return expr.code;
-  if (expr.text) return `Html.text "${expr.text}"`;
+  if (expr.text) return `Html.text "${expr.text.replace(/"/g, '\\"')}"`;
   if (expr.textExpr) return `Html.text ${expr.textExpr}`;
   if (expr.whitespace !== undefined) return expr.whitespace;
   throw `Invalid expression: ${JSON.stringify(expr)}`
