@@ -26,12 +26,17 @@ On the flip side, if you are an Emacs fan then probably you are a hacker as well
 If you want to contribute with this or any other `elmx` integration let me know in an issue and I'll put the link here.
 
 
+Webpack integration
+----------------
+Use [elmx-webpack-preloader](https://www.npmjs.com/package/elmx-webpack-preloader).
+
 
 Gulp integration
 ----------------
 This integration uses Gulp to monitor changes in `.elmx` files and pipes the file contents through the `elmx` parser to produce `.elm` files.
 
 See the full integration example in: [Gulp integration example](https://github.com/pzavolinsky/elmx/tree/master/example)
+
 
 Library installation
 --------------------
