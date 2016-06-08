@@ -1,17 +1,23 @@
-module Main where
-import Html exposing (Html, Attribute, toElement)
-import Html.Attributes
-import Html.Events exposing (on, targetValue)
-import Signal exposing (Address)
-import StartApp.Simple as StartApp
+import Html exposing (..)
+import Html.App as Html
+import Html.Attributes exposing (..)
+import Html.Events exposing (onInput)
 
-elmx : Html
-elmx = Html.text ""
+showError : List (Html.Attribute ()) -> Html ()
+showError errorAttrs = <span {:errorAttrs}>Oops!</span>
+
 
 main =
-  StartApp.start { model = empty, view = view, update = update }
+  Html.beginnerProgram
+    { model = model
+    , view = view
+    , update = update
+    }
+
+
 
 -- MODEL
+
 
 type alias Model =
   { name : String
@@ -20,20 +26,22 @@ type alias Model =
   }
 
 
-empty : Model
-empty =
+model : Model
+model =
   Model "" "" ""
+
 
 
 -- UPDATE
 
-type Action
+
+type Msg
     = Name String
     | Password String
     | PasswordAgain String
 
 
-update : Action -> Model -> Model
+update : Msg -> Model -> Model
 update action model =
   case action of
     Name name ->
@@ -46,38 +54,26 @@ update action model =
       { model | passwordAgain = password }
 
 
+
 -- VIEW
 
-view : Address Action -> Model -> Html
-view address model =
+
+view : Model -> Html Msg
+view model =
+  <div>
+    <input type="text" placeholder="Name" {onInput Name} />
+    <input type="password" placeholder="Password" {onInput Password} />
+    <input type="password" placeholder="Re-enter Password" {onInput PasswordAgain} />
+    {viewValidation model}
+  </div>
+
+viewValidation : Model -> Html msg
+viewValidation model =
   let
-    validationMessage =
+    (color, message) =
       if model.password == model.passwordAgain then
-        <span style="color: green">Passwords Match!</span>
+        ("green", "OK")
       else
-        <span style="color: red">Passwords do not match :(</span>
+        ("red", "Passwords do not match!")
   in
-    <div>
-      {field "text" address Name "User Name" model.name}
-      {field "password" address Password "Password" model.password}
-      {field "password" address PasswordAgain "Re-enter Password" model.passwordAgain}
-      <div style={fieldNameStyle "300px"}>{validationMessage}</div>
-    </div>
-
-field : String -> Address Action -> (String -> Action) -> String -> String -> Html
-field fieldType address toAction name content =
-  let
-    onInput = on "input" targetValue (\string -> Signal.message address (toAction string))
-  in
-    <div>
-      <div style={fieldNameStyle "160px"}>{=name}</div>
-      <input type={fieldType} placeholder={name} value={content} {onInput} />
-    </div>
-
-
-fieldNameStyle : String -> String
-fieldNameStyle px =
-  "width: " ++ px
-  ++ "; padding: 10px"
-  ++ "; text-align: right"
-  ++ "; display: inline-block"
+    <div style={"color:" ++ color}>{=message}</div>

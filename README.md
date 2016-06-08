@@ -67,7 +67,7 @@ For example:
 import Html
 import Html.Attributes
 
-main : Html
+main : Html.Html msg
 main = <span>Hello, elmx!</span>
 ```
 
@@ -77,7 +77,7 @@ Translates to:
 import Html
 import Html.Attributes
 
-main : Html
+main : Html.Html msg
 main = Html.span [] [Html.text "Hello, elmx!"]
 ```
 
@@ -87,49 +87,55 @@ Note that for `elmx` to work you need to import both `Html` and `Html.Attributes
 Attributes can be specified with:
 
 ```elm
-showError : Html
+showError : Html msg
 showError = <span class="error">Oops!</span>
 ```
 
 Or:
 
 ```elm
-showError : String -> Html
+showError : String -> Html msg
 showError errorClass = <span class={errorClass}>Oops!</span>
 ```
 
 Or:
 
 ```elm
-showError : Html.Attribute -> Html
+showError : Html.Attribute msg -> Html msg
 showError errorAttr = <span {errorAttr}>Oops!</span>
 ```
 
 Or:
 
 ```elm
-showError : [Html.Attribute] -> Html
+myInput : (String -> msg) -> Html msg
+myInput tagFn = <input {onInput tagFn}/>
+```
+
+Or:
+
+```elm
+showError : List (Html.Attribute msg) -> Html msg
 showError errorAttrs = <span {:errorAttrs}>Oops!</span>
 ```
 
 (note the `:` in `{:errorAttrs}`)
 
-
 Elm expressions can be interpolated into HTML with:
 
 ```elm
-addBorder : Html -> Html
+addBorder : Html msg -> Html msg
 addBorder s = <div class="border">{s}</div>
 ```
 
 Unlike JSX, `elmx` requires a few extensions to accommodate for Elm's types, namely:
   - `{=text}`, where `text : String` (only required for element interpolation)
-  - `{:list}`, where `list : [Html]`
+  - `{:list}`, where `list : List (Html msg)`
 
 Elm strings can be interpolated with:
 
 ```elm
-showMessage : String -> Html
+showMessage : String -> Html msg
 showMessage s = <span>{=s}</span>
 ```
 
@@ -138,7 +144,7 @@ showMessage s = <span>{=s}</span>
 Elm lists can be interpolated with:
 
 ```elm
-makeList : [Html] -> Html
+makeList : List (Html msg) -> Html msg
 makeList lis = <ul>{:lis}</ul>
 ```
 
@@ -151,10 +157,10 @@ import Html
 import Html.Attributes exposing (title, align)
 import List exposing (map)
 
-main : Html.Html
+main : Html.Html msg
 main =
   let
-    title = <h1>Hello</h1>
+    hello = <h1>Hello</h1>
     name = "Homer"
     lis = map (\s -> <li>{=s}</li>) [ "Bart", "List", "Maggie" ]
     commonAttrs =
@@ -163,7 +169,7 @@ main =
       ]
   in
     <div class="container" {:commonAttrs}>
-      {title}
+      {hello}
       {=name} is the father of:
       <ul>{:lis}</ul>
     </div>

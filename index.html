@@ -15,12 +15,7 @@
     <script src="cheatsheet/elmx-bundle.min.js"></script>
     <script src="cheatsheet/elm.js"></script>
     <script>
-      var app = Elm.embed(
-        Elm.TryElmx,
-        document.getElementById('main'), {
-          codeCompiled: ['',''],
-          init: []
-        });
+      var app = Elm.Main.embed(document.getElementById('main'));
 
       app.ports.compileCode.subscribe(function(args) {
         var id = args[0];
@@ -43,58 +38,64 @@
         return [ '=' + s, '' ]
       }
 
-      app.ports.init.send(
-        [ title('Playground')
-        , test('',
-          [ '-- type elmx here'
-          , '-- or check the examples below'
-          ])
-        , title('Tags')
-        , test('Empty tag',
-          [ 'someSpace : Html'
-          , 'someSpace = <br/>'
-          ])
-        , test('Simple tag',
-          [ 'greeting : Html'
-          , 'greeting = <div>Hi</div>'
-          ])
-        , test('Nested constant tag',
-          [ 'fancyGreeting : Html'
-          , 'fancyGreeting ='
-          , '  <div>'
-          , '    <h1>Hi</h1>'
-          , '  </div>'
-          ])
-        , test('Nested Html',
-          [ 'wrap : Html -> Html'
-          , 'wrap item = <li>{item}</li>'
-          ])
-        , test('Nested list of Html',
-          [ 'listOf : [Html] -> Html'
-          , 'listOf items = <ul>{:items}</ul>'
-          ])
-        , test('Nested text',
-          [ 'title : String -> Html'
-          , 'title what = <h1>{=what}</h1>'
-          ])
-        , title('Attributes')
-        , test('Constant attribute',
-          [ 'niceGreeting : Html'
-          , 'niceGreeting = <div class="nice">Hi</div>'
-          ])
-        , test('Expression attribute',
-          [ 'customGreeting : String -> Html'
-          , 'customGreeting class = <div class={class}>Hi</div>'
-          ])
-        , test('Attribute attribute',
-          [ 'attrGreeting : Attribute -> Html'
-          , 'attrGreeting attr = <div {attr}>Hi</div>'
-          ])
-        , test('Attribute list',
-          [ 'attrsGreeting : List Attribute -> Html'
-          , 'attrsGreeting attrs = <div {:attrs}>Hi</div>'
-          ])
-        ]);
+      setTimeout(function() {
+        app.ports.init.send(
+          [ title('Playground')
+          , test('',
+            [ '-- type elmx here'
+            , '-- or check the examples below'
+            ])
+          , title('Tags')
+          , test('Empty tag',
+            [ 'someSpace : Html msg'
+            , 'someSpace = <br/>'
+            ])
+          , test('Simple tag',
+            [ 'greeting : Html msg'
+            , 'greeting = <div>Hi</div>'
+            ])
+          , test('Nested constant tag',
+            [ 'fancyGreeting : Html msg'
+            , 'fancyGreeting ='
+            , '  <div>'
+            , '    <h1>Hi</h1>'
+            , '  </div>'
+            ])
+          , test('Nested Html',
+            [ 'wrap : Html msg -> Html msg'
+            , 'wrap item = <li>{item}</li>'
+            ])
+          , test('Nested list of Html',
+            [ 'listOf : List (Html msg) -> Html msg'
+            , 'listOf items = <ul>{:items}</ul>'
+            ])
+          , test('Nested text',
+            [ 'title : String -> Html msg'
+            , 'title what = <h1>{=what}</h1>'
+            ])
+          , title('Attributes')
+          , test('Constant attribute',
+            [ 'niceGreeting : Html msg'
+            , 'niceGreeting = <div class="nice">Hi</div>'
+            ])
+          , test('Expression attribute',
+            [ 'customGreeting : String -> Html msg'
+            , 'customGreeting class = <div class={class}>Hi</div>'
+            ])
+          , test('Attribute attribute',
+            [ 'attrGreeting : Attribute msg -> Html msg'
+            , 'attrGreeting attr = <div {attr}>Hi</div>'
+            ])
+          , test('Attribute list',
+            [ 'attrsGreeting : List (Attribute msg) -> Html msg'
+            , 'attrsGreeting attrs = <div {:attrs}>Hi</div>'
+            ])
+          , test('Handler attribute',
+            [ 'tagInput : (String -> msg) -> Html msg'
+            , 'tagInput tagFn = <input {onInput tagFn}/>'
+            ])
+          ]);
+      }, 1);
     </script>
   </body>
 </html>

@@ -2,7 +2,7 @@ import Html
 import Html.Attributes exposing (title, align)
 import List exposing (map)
 
-main : Html.Html
+main : Html.Html ()
 main =
   let
     hello = <h1>Hello</h1>

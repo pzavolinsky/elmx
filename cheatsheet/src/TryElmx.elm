@@ -1,54 +1,47 @@
-module TryElmx where
-import Html exposing (Html, Attribute, toElement)
+port module Main exposing (..)
+import Html exposing (Html, Attribute)
+import Html.App as Html
 import Html.Attributes
-import Html.Events exposing (on, targetValue)
+import Html.Events exposing (onInput, on, targetValue)
 import String
-import Effects exposing (Effects)
-import Signal exposing (Address)
-import Task
-import StartApp
-
 
 -- BOOTSTRAP
-
-app : StartApp.App Model
-app = StartApp.start
-  { init = ([], Effects.none)
-  , view = view
-  , update = update
+{-
   , inputs =
     [ onInit
     , onCodeCompiled
     ]
   }
+-}
 
-main : Signal Html
+main : Program Never
 main =
-  app.html
+  Html.program
+    { init = ([], Cmd.none)
+    , update = update
+    , view = view
+    , subscriptions = subscriptions
+    }
 
-port tasks : Signal (Task.Task Effects.Never ())
-port tasks =
-  app.tasks
+type Msg = NoOp
+  | Init (List (String, String))
+  | Update Test String
+  | CodeCompiled (String, String)
 
 
 -- INTEROP
 
-compileCodeMailbox : Signal.Mailbox (String, String)
-compileCodeMailbox = Signal.mailbox ("", "")
+port compileCode : (String, String) -> Cmd msg
 
-port compileCode : Signal (String, String)
-port compileCode = compileCodeMailbox.signal
+port codeCompiled : ((String, String) -> msg) -> Sub msg
 
-port codeCompiled : Signal (String, String)
-onCodeCompiled : Signal Action
-onCodeCompiled =
-  Signal.map (\(id, elm) -> CodeCompiled id elm) codeCompiled
+port init : (List (String, String) -> msg) -> Sub msg
 
-port init : Signal (List (String, String))
-onInit : Signal Action
-onInit =
-  Signal.map Init init
-
+subscriptions : Model -> Sub Msg
+subscriptions _ = Sub.batch
+  [ codeCompiled CodeCompiled
+  , init Init
+  ]
 
 -- MODEL
 
@@ -64,18 +57,10 @@ type alias Model = List Test
 
 -- UPDATE
 
-type Action = NoOp
-  | Init (List (String, String))
-  | Update Test String
-  | CodeCompiled String String
+compileTest : Test -> Cmd Msg
+compileTest test = compileCode (test.id, test.code)
 
-compileTest : Test -> Effects Action
-compileTest test =
-  Signal.send compileCodeMailbox.address (test.id, test.code)
-  |> Task.map (\_ -> NoOp)
-  |> Effects.task
-
-update : Action -> Model -> (Model, Effects Action)
+update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
   case action of
     Init items ->
@@ -90,7 +75,7 @@ update action model =
           List.indexedMap toTest items
         eff =
           List.map compileTest newModel
-          |> Effects.batch
+          |> Cmd.batch
       in
         (newModel, eff)
 
@@ -105,48 +90,43 @@ update action model =
       in
         (newModel, eff)
 
-    CodeCompiled id elm ->
+    CodeCompiled (id, elm) ->
       let
         newModel =
           List.map (\t -> if t.id == id then { t | elm = elm } else t) model
       in
-        (newModel, Effects.none)
+        (newModel, Cmd.none)
 
     NoOp ->
-        (model, Effects.none)
-
+        (model, Cmd.none)
 
 -- VIEW
 
-view : Address Action -> Model -> Html
-view address model =
-    Html.div [] ([
-      Html.h1 [] [Html.text "
-        Interactive ", Html.a [Html.Attributes.attribute "href" "https://github.com/pzavolinsky/elmx"] [Html.text "elmx"], Html.text "
-        cheatsheet
-      "]
-      ] ++ List.map (viewModelItem address) model ++ [
-    ])
+view : Model -> Html Msg
+view model =
+  Html.div [] ([
+    Html.h1 [] [Html.text "
+      Interactive ", Html.a [Html.Attributes.attribute "href" "https://github.com/pzavolinsky/elmx"] [Html.text "elmx"], Html.text "
+      cheatsheet
+    "]
+    ] ++ List.map viewModelItem model ++ [
+  ])
 
-viewModelItem : Address Action -> Test -> Html
-viewModelItem address test =
+viewModelItem : Test -> Html Msg
+viewModelItem test =
   if test.code == "" && String.startsWith "=" test.title
   then viewTitle test
-  else viewTest address test
+  else viewTest test
 
-viewTitle : Test -> Html
+viewTitle : Test -> Html Msg
 viewTitle test =
   Html.div [Html.Attributes.attribute "class" "test-title"] [
     Html.h2 [Html.Attributes.attribute "class" "title"] [Html.text (String.dropLeft 1 test.title)]
   ]
 
-viewTest : Address Action -> Test -> Html
-viewTest address test =
+viewTest : Test -> Html Msg
+viewTest test =
   let
-    updateMessage =
-      Signal.message address << Update test
-    onInput =
-      on "input" targetValue updateMessage
     title =
       if test.title == ""
       then Html.span [] []
@@ -157,7 +137,7 @@ viewTest address test =
       , Html.div [Html.Attributes.attribute "class" "row"] [
         Html.div [Html.Attributes.attribute "class" "col-sm-6"] [
           Html.div [Html.Attributes.attribute "class" "text-right"] [Html.small [] [Html.text "elmx"]]
-          , Html.textarea [onInput, Html.Attributes.attribute "rows" (testRows test.code)] [Html.text test.code]
+          , Html.textarea [(onInput (Update test)), Html.Attributes.attribute "rows" (testRows test.code)] [Html.text test.code]
         ]
         , Html.div [Html.Attributes.attribute "class" "col-sm-6"] [
           Html.div [Html.Attributes.attribute "class" "text-right"] [Html.small [] [Html.text "elm"]]
