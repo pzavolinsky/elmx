@@ -108,7 +108,7 @@ showError errorAttr = <span {errorAttr}>Oops!</span>
 Or:
 
 ```elm
-import Html.Events exposing (onClick)
+import Html.Events exposing (onInput)
 -- note the import above!
 
 myInput : (String -> msg) -> Html msg
