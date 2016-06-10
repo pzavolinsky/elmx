@@ -108,6 +108,9 @@ showError errorAttr = <span {errorAttr}>Oops!</span>
 Or:
 
 ```elm
+import Html.Events exposing (onClick)
+-- not the import above!
+
 myInput : (String -> msg) -> Html msg
 myInput tagFn = <input {onInput tagFn}/>
 ```
