@@ -62,24 +62,22 @@ function generateAttributeList(simple,compound) {
     : `(${all.join(" ++ ")})`;
 }
 
-function generate(state) {
-  const { expr } = state;
+function generate({ expr, name, parent, attributes, children }) {
   if (expr) return generateExpression(expr);
 
-  if (!state.parent) {
-    return state.children.map(generate).join("");
+  if (!parent) {
+    return children.map(generate).join("");
   }
 
-  const name = state.name;
   const [compound,simple] = R.partition(x => x
     ? x.match(/^:.*/)
     : false,
-    state.attributes);
-  const attributes = generateAttributeList(
+    attributes);
+  const attrs = generateAttributeList(
     simple,
-    compound.map(x => x.substr(1)));
-  const children = parseChildren(state.children);
-  return `Html.${name} ${attributes} ${children}`;
+    compound.map(x => x.slice(1)));
+  const childItems = parseChildren(children);
+  return `Html.${name} ${attrs} ${childItems}`;
 }
 
 generate.parseChildrenList = parseChildrenList;

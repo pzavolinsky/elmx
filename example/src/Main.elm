@@ -1,10 +1,7 @@
-import Html exposing (..)
+import Html exposing (Html)
 import Html.App as Html
-import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
-
-showError : List (Html.Attribute ()) -> Html ()
-showError errorAttrs = Html.span errorAttrs [Html.text "Oops!"]
+import Html.Attributes
+import Html.Events
 
 
 main =
@@ -61,9 +58,9 @@ update action model =
 view : Model -> Html Msg
 view model =
   Html.div [] [
-    Html.input [Html.Attributes.attribute "type" "text", Html.Attributes.attribute "placeholder" "Name", (onInput Name)] []
-    , Html.input [Html.Attributes.attribute "type" "password", Html.Attributes.attribute "placeholder" "Password", (onInput Password)] []
-    , Html.input [Html.Attributes.attribute "type" "password", Html.Attributes.attribute "placeholder" "Re-enter Password", (onInput PasswordAgain)] []
+    Html.input [Html.Attributes.attribute "type" "text", Html.Attributes.attribute "placeholder" "Name", Html.Events.onInput (Name)] []
+    , Html.input [Html.Attributes.attribute "type" "password", Html.Attributes.attribute "placeholder" "Password", Html.Events.onInput (Password)] []
+    , Html.input [Html.Attributes.attribute "type" "password", Html.Attributes.attribute "placeholder" "Re-enter Password", Html.Events.onInput (PasswordAgain)] []
     , viewValidation model
   ]
 

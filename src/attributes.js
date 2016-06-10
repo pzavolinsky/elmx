@@ -1,6 +1,25 @@
 const R = require("ramda");
 const expr = require("./expression");
 
+const events = R.compose(
+  R.fromPairs,
+  R.map(n => [n,true])
+)([ 'onClick'
+  , 'onDoubleClick'
+  , 'onMouseDown'
+  , 'onMouseUp'
+  , 'onMouseEnter'
+  , 'onMouseLeave'
+  , 'onMouseOver'
+  , 'onMouseOut'
+  , 'onInput'
+  , 'onCheck'
+  , 'onSubmit'
+  , 'onSubmitOptions'
+  , 'onBlur'
+  , 'onFocus'
+  ]);
+
 function count(what, where) {
   const m = where.match(new RegExp(what, "g"));
   return m ? m.length : 0;
@@ -38,15 +57,15 @@ function mapAttribute(attr) {
 
   if (name === '') return expr.get(value);
 
-  var attrValue = expr.get(value) || ('"' + value + '"');
-  return 'Html.Attributes.attribute "'+name+'" '+attrValue;
+  const attrValue = expr.get(value) || (`"${value}"`);
+
+  return events[name]
+    ? `Html.Events.${name} ${attrValue}`
+    : `Html.Attributes.attribute "${name}" ${attrValue}`;
 }
 
 function parse(attrs) {
-  var depth = 0;
-  var name;
-  var value;
-  var a = R.compose(
+  return R.compose(
     R.map(mapAttribute),
     data => data.depth
       ? missingCloseBracket(data)
@@ -55,8 +74,6 @@ function parse(attrs) {
     R.map(([n,v]) => v === '' ? ['',n] : [n,v]),
     R.toPairs
   )(attrs);
-
-  return a;
 }
 
 module.exports = parse

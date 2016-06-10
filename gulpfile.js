@@ -20,7 +20,7 @@ gulp.task('build', function(cb) {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('bundle', ['build'], function () {
+gulp.task('bundle', ['build', 'test'], function () {
   return browserify({ entries: ['./dist/bundle.js'],  })
     .bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))

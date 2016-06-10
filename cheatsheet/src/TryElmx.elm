@@ -1,8 +1,8 @@
 port module Main exposing (..)
-import Html exposing (Html, Attribute)
+import Html exposing (Html)
 import Html.App as Html
 import Html.Attributes
-import Html.Events exposing (onInput, on, targetValue)
+import Html.Events
 import String
 
 -- BOOTSTRAP
@@ -137,7 +137,7 @@ viewTest test =
       , Html.div [Html.Attributes.attribute "class" "row"] [
         Html.div [Html.Attributes.attribute "class" "col-sm-6"] [
           Html.div [Html.Attributes.attribute "class" "text-right"] [Html.small [] [Html.text "elmx"]]
-          , Html.textarea [(onInput (Update test)), Html.Attributes.attribute "rows" (testRows test.code)] [Html.text test.code]
+          , Html.textarea [Html.Events.onInput (Update test), Html.Attributes.attribute "rows" (testRows test.code)] [Html.text test.code]
         ]
         , Html.div [Html.Attributes.attribute "class" "col-sm-6"] [
           Html.div [Html.Attributes.attribute "class" "text-right"] [Html.small [] [Html.text "elm"]]

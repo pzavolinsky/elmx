@@ -48,9 +48,9 @@ npm install --save-dev elmx
 Then:
 
 ```javascript
-var elmxParser = require('elmx');
+const elmxParser = require('elmx');
 
-var elmSource = elmxParser(elmxSource);
+const elmSource = elmxParser(elmxSource);
 ```
 
 
@@ -113,6 +113,19 @@ import Html.Events exposing (onInput)
 
 myInput : (String -> msg) -> Html msg
 myInput tagFn = <input {onInput tagFn}/>
+```
+
+Or, for any of the following, `onClick`, `onDoubleClick`, `onMouseDown`, `onMouseUp`, `onMouseEnter`, `onMouseLeave`, `onMouseOver`, `onMouseOut`, `onInput`, `onCheck`, `onSubmit`, `onSubmitOptions`, `onBlur`, `onFocus`:
+
+```elm
+import Html.Events
+-- note the import above!
+
+myInput : (String -> msg) -> Html msg
+myInput tagFn = <input onInput={tagFn} />
+
+myButton : Html msg
+myButton = <button onClick={Clicked}>Click Me!</button>
 ```
 
 Or:

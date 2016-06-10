@@ -139,4 +139,13 @@ describe('parser', () => {
         Html.span [] ([Html.text "Hi "] ++ name ++ [Html.text ", ", Html.i [] [Html.text "welcome!"]])`
     );
   });
+
+  it('understands event attributes', () => {
+    expectParsed(`main =
+      <button onClick={Clicked}>Click me</button>`
+    )
+    .toEqual(`main =
+      Html.button [Html.Events.onClick Clicked] [Html.text "Click me"]`
+    );
+  });
 });

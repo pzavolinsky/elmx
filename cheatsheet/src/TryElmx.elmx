@@ -1,8 +1,8 @@
 port module Main exposing (..)
-import Html exposing (Html, Attribute)
+import Html exposing (Html)
 import Html.App as Html
 import Html.Attributes
-import Html.Events exposing (onInput, on, targetValue)
+import Html.Events
 import String
 
 -- BOOTSTRAP
@@ -137,7 +137,7 @@ viewTest test =
       <div class="row">
         <div class="col-sm-6">
           <div class="text-right"><small >elmx</small></div>
-          <textarea {onInput (Update test)} rows={testRows test.code}>{=test.code}</textarea>
+          <textarea onInput={Update test} rows={testRows test.code}>{=test.code}</textarea>
         </div>
         <div class="col-sm-6">
           <div class="text-right"><small >elm</small></div>

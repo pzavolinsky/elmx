@@ -1,10 +1,7 @@
-import Html exposing (..)
+import Html exposing (Html)
 import Html.App as Html
-import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
-
-showError : List (Html.Attribute ()) -> Html ()
-showError errorAttrs = <span {:errorAttrs}>Oops!</span>
+import Html.Attributes
+import Html.Events
 
 
 main =
@@ -61,9 +58,9 @@ update action model =
 view : Model -> Html Msg
 view model =
   <div>
-    <input type="text" placeholder="Name" {onInput Name} />
-    <input type="password" placeholder="Password" {onInput Password} />
-    <input type="password" placeholder="Re-enter Password" {onInput PasswordAgain} />
+    <input type="text" placeholder="Name" onInput={Name} />
+    <input type="password" placeholder="Password" onInput={Password} />
+    <input type="password" placeholder="Re-enter Password" onInput={PasswordAgain} />
     {viewValidation model}
   </div>
 
