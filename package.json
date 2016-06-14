@@ -1,7 +1,7 @@
 {
   "name": "elmx",
   "main": "dist/parser.js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A tiny precompiler that takes an Elm program with embedded HTML and desugars the HTML into elm-html syntax",
   "keywords": [
     "elm",

@@ -5,6 +5,9 @@ const expr = require("./expression");
 const generate = require("./generator");
 const R = require("ramda");
 
+const PIPE_BACKWARDS = '##!!PIPE_BACKWARDS!!##';
+const PIPE_REGEX = new RegExp(PIPE_BACKWARDS, 'g');
+
 module.exports = function(elmx) {
   const state = new State();
 
@@ -29,8 +32,8 @@ module.exports = function(elmx) {
     lowerCaseTags: false,
     lowerCaseAttributeNames: false
   });
-  parser.write(elmx);
+  parser.write(elmx.replace(/<\|/g, PIPE_BACKWARDS));
   parser.end();
 
-  return generate(state.get());
+  return generate(state.get()).replace(PIPE_REGEX, '<|');
 }

@@ -148,4 +148,21 @@ describe('parser', () => {
       Html.button [Html.Events.onClick Clicked] [Html.text "Click me"]`
     );
   });
+
+  it('understands <<', () => {
+    expectParsed(`List.head << List.map (\\x -> x + 1)`)
+    .toEqual(`List.head << List.map (\\x -> x + 1)`);
+  });
+  it('understands >>', () => {
+    expectParsed(`List.map (\\x -> x + 1) >> List.head`)
+    .toEqual(`List.map (\\x -> x + 1) >> List.head`);
+  });
+  it('understands <|', () => {
+    expectParsed(`print <| List.head <| l`)
+    .toEqual(`print <| List.head <| l`);
+  });
+  it('understands |>', () => {
+    expectParsed(`l |> List.head`)
+    .toEqual(`l |> List.head`);
+  });
 });

@@ -252,6 +252,9 @@ var expr = require("./expression");
 var generate = require("./generator");
 var R = require("ramda");
 
+var PIPE_BACKWARDS = '##!!PIPE_BACKWARDS!!##';
+var PIPE_REGEX = new RegExp(PIPE_BACKWARDS, 'g');
+
 module.exports = function (elmx) {
   var state = new State();
 
@@ -277,10 +280,10 @@ module.exports = function (elmx) {
     lowerCaseTags: false,
     lowerCaseAttributeNames: false
   });
-  parser.write(elmx);
+  parser.write(elmx.replace(/<\|/g, PIPE_BACKWARDS));
   parser.end();
 
-  return generate(state.get());
+  return generate(state.get()).replace(PIPE_REGEX, '<|');
 };
 },{"./attributes":1,"./expression":3,"./generator":4,"./state":6,"htmlparser2":40,"ramda":47}],6:[function(require,module,exports){
 "use strict";
