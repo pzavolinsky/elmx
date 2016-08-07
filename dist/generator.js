@@ -35,7 +35,7 @@ function parseChildrenList(list) {
     return group.list || '[' + group.join('') + ']';
   });
 
-  return items.length == 1 ? items[0] : '(' + items.join(' ++ ') + ')';
+  return items.length == 1 ? '(' + items[0] + ')' : '(' + items.join(' ++ ') + ')';
 }
 
 function parseChildren(children) {

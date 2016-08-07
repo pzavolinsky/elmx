@@ -12,8 +12,12 @@ module.exports = function(elmx) {
   const state = new State();
 
   let parser = new htmlparser.Parser({
-    onopentag: function(name, attrs) {
+    onopentag: function(name) {
+      const attrs = state.popAttrs();
       state.enter(name, attrParser(attrs));
+    },
+    onattribute: function(name, value) {
+      state.attr(name, value);
     },
     ontext: function(text) {
       if (state.isRoot()) {

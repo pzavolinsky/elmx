@@ -63,12 +63,10 @@ function parse(attrs) {
   return R.compose(R.map(mapAttribute), function (data) {
     return data.depth ? missingCloseBracket(data) : data.items;
   }, R.reduce(reduceAttrs, { depth: 0, items: [] }), R.map(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 2);
-
-    var n = _ref2[0];
-    var v = _ref2[1];
-    return v === '' ? ['', n] : [n, v];
-  }), R.toPairs)(attrs);
+    var name = _ref.name;
+    var value = _ref.value;
+    return value === '' ? ['', name] : [name, value];
+  }))(attrs);
 }
 
 module.exports = parse;

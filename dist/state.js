@@ -10,6 +10,7 @@ var State = function () {
   function State(parent) {
     _classCallCheck(this, State);
 
+    this.attrBuffer = [];
     this.state = {
       children: [],
       attributes: []
@@ -49,6 +50,18 @@ var State = function () {
       this.state = this.state.parent;
     }
   }, {
+    key: "attr",
+    value: function attr(name, value) {
+      this.attrBuffer.push({ name: name, value: value });
+    }
+  }, {
+    key: "popAttrs",
+    value: function popAttrs() {
+      var attrs = this.attrBuffer;
+      this.attrBuffer = [];
+      return attrs;
+    }
+  }, {
     key: "dump",
     value: function dump(node) {
       var _this = this;
@@ -56,8 +69,7 @@ var State = function () {
       var padd = arguments.length <= 1 || arguments[1] === undefined ? "" : arguments[1];
 
       if (!node) node = this.state;
-      if (node.expr) return padd + JSON.stringify(node.expr) + '\n';
-      return "" + padd + node.name + " [" + node.attributes.join(', ') + "]\n" + node.children.map(function (c) {
+      return node.expr ? padd + JSON.stringify(node.expr) + '\n' : "" + padd + node.name + " [" + node.attributes.join(', ') + "]\n" + node.children.map(function (c) {
         return _this.dump(c, padd + "  ");
       }).join('');
     }

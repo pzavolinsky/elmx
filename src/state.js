@@ -2,6 +2,7 @@ const R = require("ramda")
 
 class State {
   constructor(parent) {
+    this.attrBuffer = [];
     this.state = {
       children: [],
       attributes: []
@@ -25,7 +26,7 @@ class State {
   }
 
   enter(name, attributes) {
-    var node = { name: name, parent: this.state, children: [], attributes };
+    const node = { name, parent: this.state, children: [], attributes };
     this.state.children.push(node);
     this.state = node;
   }
@@ -34,11 +35,21 @@ class State {
     this.state = this.state.parent;
   }
 
+  attr(name, value) {
+    this.attrBuffer.push({ name, value });
+  }
+  popAttrs() {
+    const attrs = this.attrBuffer;
+    this.attrBuffer = [];
+    return attrs;
+  }
+
   dump(node, padd = "") {
     if (!node) node = this.state;
-    if (node.expr) return padd + JSON.stringify(node.expr) + '\n';
-    return `${padd}${node.name} [${node.attributes.join(', ')}]\n`
-      + node.children.map(c => this.dump(c, padd + "  ")).join('');
+    return node.expr
+      ? padd + JSON.stringify(node.expr) + '\n'
+      : `${padd}${node.name} [${node.attributes.join(', ')}]\n`
+        + node.children.map(c => this.dump(c, padd + "  ")).join('');
   }
 }
 

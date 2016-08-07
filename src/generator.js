@@ -13,7 +13,7 @@ function parseChildrenList(list) {
     .map(group => group.list || `[${group.join('')}]`);
 
   return items.length == 1
-    ? items[0]
+    ? `(${items[0]})`
     : `(${items.join(' ++ ')})`;
 }
 

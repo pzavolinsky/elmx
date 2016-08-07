@@ -20,9 +20,7 @@ function get(text) {
   const lastIndex = text.length - 1;
   if (text.indexOf("{") != 0 || text.lastIndexOf("}") != lastIndex) return null;
   text = text.substring(1, lastIndex);
-  return (text.indexOf(" ") != -1)
-    ? "(" + text + ")"
-    : text;
+  return "(" + text + ")";
 }
 
 function parse(text) {

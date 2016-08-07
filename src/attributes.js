@@ -71,8 +71,7 @@ function parse(attrs) {
       ? missingCloseBracket(data)
       : data.items,
     R.reduce(reduceAttrs, { depth: 0, items: [] }),
-    R.map(([n,v]) => v === '' ? ['',n] : [n,v]),
-    R.toPairs
+    R.map(({name, value}) => value === '' ? ['',name] : [name,value])
   )(attrs);
 }
 
