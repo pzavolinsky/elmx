@@ -64,12 +64,10 @@ function parse(attrs) {
   return R.compose(R.map(mapAttribute), function (data) {
     return data.depth ? missingCloseBracket(data) : data.items;
   }, R.reduce(reduceAttrs, { depth: 0, items: [] }), R.map(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 2);
-
-    var n = _ref2[0];
-    var v = _ref2[1];
-    return v === '' ? ['', n] : [n, v];
-  }), R.toPairs)(attrs);
+    var name = _ref.name;
+    var value = _ref.value;
+    return value === '' ? ['', name] : [name, value];
+  }))(attrs);
 }
 
 module.exports = parse;
@@ -102,7 +100,7 @@ function get(text) {
   var lastIndex = text.length - 1;
   if (text.indexOf("{") != 0 || text.lastIndexOf("}") != lastIndex) return null;
   text = text.substring(1, lastIndex);
-  return text.indexOf(" ") != -1 ? "(" + text + ")" : text;
+  return "(" + text + ")";
 }
 
 function parse(text) {
@@ -166,7 +164,7 @@ function parseChildrenList(list) {
     return group.list || '[' + group.join('') + ']';
   });
 
-  return items.length == 1 ? items[0] : '(' + items.join(' ++ ') + ')';
+  return items.length == 1 ? '(' + items[0] + ')' : '(' + items.join(' ++ ') + ')';
 }
 
 function parseChildren(children) {
@@ -259,8 +257,12 @@ module.exports = function (elmx) {
   var state = new State();
 
   var parser = new htmlparser.Parser({
-    onopentag: function onopentag(name, attrs) {
+    onopentag: function onopentag(name) {
+      var attrs = state.popAttrs();
       state.enter(name, attrParser(attrs));
+    },
+    onattribute: function onattribute(name, value) {
+      state.attr(name, value);
     },
     ontext: function ontext(text) {
       if (state.isRoot()) {
@@ -298,6 +300,7 @@ var State = function () {
   function State(parent) {
     _classCallCheck(this, State);
 
+    this.attrBuffer = [];
     this.state = {
       children: [],
       attributes: []
@@ -337,6 +340,18 @@ var State = function () {
       this.state = this.state.parent;
     }
   }, {
+    key: "attr",
+    value: function attr(name, value) {
+      this.attrBuffer.push({ name: name, value: value });
+    }
+  }, {
+    key: "popAttrs",
+    value: function popAttrs() {
+      var attrs = this.attrBuffer;
+      this.attrBuffer = [];
+      return attrs;
+    }
+  }, {
     key: "dump",
     value: function dump(node) {
       var _this = this;
@@ -344,8 +359,7 @@ var State = function () {
       var padd = arguments.length <= 1 || arguments[1] === undefined ? "" : arguments[1];
 
       if (!node) node = this.state;
-      if (node.expr) return padd + JSON.stringify(node.expr) + '\n';
-      return "" + padd + node.name + " [" + node.attributes.join(', ') + "]\n" + node.children.map(function (c) {
+      return node.expr ? padd + JSON.stringify(node.expr) + '\n' : "" + padd + node.name + " [" + node.attributes.join(', ') + "]\n" + node.children.map(function (c) {
         return _this.dump(c, padd + "  ");
       }).join('');
     }
