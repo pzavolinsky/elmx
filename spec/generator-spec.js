@@ -94,7 +94,7 @@ describe('generator', () => {
         {
       	  parent: {},
       	  name: 'span',
-      	  attributes: [':attributes'],
+      	  attributes: ['(:attributes)'],
       	  children: []
       	}
       ]
@@ -110,7 +110,7 @@ describe('generator', () => {
         {
           parent: {},
           name: 'span',
-          attributes: ['Html.Attributes.attribute "id" "bar"',':attributes'],
+          attributes: ['Html.Attributes.attribute "id" "bar"','(:attributes)'],
           children: []
         }
       ]

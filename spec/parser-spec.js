@@ -173,4 +173,12 @@ describe('parser', () => {
     expectParsed('<img src={"http://foo.com/bar" ++ authorId ++ ".png"}></img>')
     .toEqual('Html.img [Html.Attributes.attribute "src" ("http://foo.com/bar" ++ authorId ++ ".png")] []');
   });
+  it('understands :attrs', () => {
+    expectParsed(`<div {:attrs} />`)
+    .toEqual(`Html.div attrs []`);
+  });
+  it('understands :attrs plus explicit attrs', () => {
+    expectParsed(`<div {:attrs} disabled="true" />`)
+    .toEqual(`Html.div ([Html.Attributes.attribute "disabled" "true"] ++ attrs) []`);
+  });
 });

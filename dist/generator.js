@@ -93,7 +93,7 @@ function generate(_ref) {
   }
 
   var _R$partition = R.partition(function (x) {
-    return x ? x.match(/^:.*/) : false;
+    return x ? x.match(/^\(:.*\)$/) : false;
   }, attributes);
 
   var _R$partition2 = _slicedToArray(_R$partition, 2);
@@ -102,7 +102,7 @@ function generate(_ref) {
   var simple = _R$partition2[1];
 
   var attrs = generateAttributeList(simple, compound.map(function (x) {
-    return x.slice(1);
+    return x.substring(2, x.length - 1);
   }));
   var childItems = parseChildren(children);
   return 'Html.' + name + ' ' + attrs + ' ' + childItems;

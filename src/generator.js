@@ -69,13 +69,13 @@ function generate({ expr, name, parent, attributes, children }) {
     return children.map(generate).join("");
   }
 
-  const [compound,simple] = R.partition(x => x
-    ? x.match(/^:.*/)
+  const [compound, simple] = R.partition(x => x
+    ? x.match(/^\(:.*\)$/)
     : false,
     attributes);
   const attrs = generateAttributeList(
     simple,
-    compound.map(x => x.slice(1)));
+    compound.map(x => x.substring(2, x.length - 1)));
   const childItems = parseChildren(children);
   return `Html.${name} ${attrs} ${childItems}`;
 }
