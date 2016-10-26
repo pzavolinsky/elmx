@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "elmx": "^1.0.5",
+    "elmx": "^1.0.8",
     "gulp": "^3.9.0",
     "gulp-insert": "^0.5.0",
     "gulp-rename": "^1.2.2"

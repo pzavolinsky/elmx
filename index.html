@@ -94,6 +94,23 @@
             [ 'tagInput : (String -> msg) -> Html msg'
             , 'tagInput tagFn = <input {onInput tagFn}/>'
             ])
+          , title('Keyed children')
+          , test('Explicitly keyed',
+            [ 'import Html.Keyed -- remember this!'
+            , ''
+            , 'keyedList : List (String, Html.Html msg) -> Html.Html msg'
+            , 'keyedList items = <ul keyed>{:items}</ul>'
+            ])
+          , test('Implicitly keyed',
+            [ 'import Html.Keyed -- remember this!'
+            , ''
+            , 'keyedList : List (String, Html.Html msg) -> Html.Html msg'
+            , 'keyedList items ='
+            , '  <ul>'
+            , '    <li key="i1">If on child has a key the parent is keyed</li>'
+            , '    {:items}'
+            , '  </ul>'
+            ])
           ]);
       }, 1);
     </script>

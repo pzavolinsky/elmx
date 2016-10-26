@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noEmitOnError": true
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "filesGlob": [
+    "./src/**/*.ts"
+  ],
+  "atom": {
+    "rewriteTsconfig": true
+  },
+  "files": [
+    "./src/attributes.ts",
+    "./src/expression.ts",
+    "./src/generation/events.ts",
+    "./src/generation/list.ts",
+    "./src/generation/types.ts",
+    "./src/generator.ts",
+    "./src/index.ts",
+    "./src/parser.ts",
+    "./src/state.ts",
+    "./src/steps/then.ts",
+    "./src/steps/types.ts",
+    "./src/steps/when.ts",
+    "./src/types.ts"
+  ]
+}

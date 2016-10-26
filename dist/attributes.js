@@ -1,72 +1,67 @@
 "use strict";
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-var R = require("ramda");
-var expr = require("./expression");
-
-var events = R.compose(R.fromPairs, R.map(function (n) {
-  return [n, true];
-}))(['onClick', 'onDoubleClick', 'onMouseDown', 'onMouseUp', 'onMouseEnter', 'onMouseLeave', 'onMouseOver', 'onMouseOut', 'onInput', 'onCheck', 'onSubmit', 'onSubmitOptions', 'onBlur', 'onFocus']);
-
 function count(what, where) {
-  var m = where.match(new RegExp(what, "g"));
-  return m ? m.length : 0;
+    var m = where.match(new RegExp(what, 'g'));
+    return m ? m.length : 0;
 }
-
-function missingCloseBracket(data) {
-  throw "Missing '}' in value for attribute '" + data.name + "'";
-}
-
 function reduceAttrs(data, attr) {
-  var _attr = _slicedToArray(attr, 2);
-
-  var name = _attr[0];
-  var value = _attr[1];
-
-
-  var depth = data.depth + count("{", value) - count("}", value);
-  if (depth < 0) {
-    throw "Extra '}' in '" + value + "' for attribute " + (name || data.name);
-  }
-
-  if (!data.depth) {
-    if (depth > 0) return { depth: depth, name: name, values: [value], items: data.items };
-    if (depth == 0) return { depth: depth, items: R.append(attr, data.items) };
-  }
-
-  if (name !== '') return missingCloseBracket(data);
-
-  var values = R.append(value, data.values);
-
-  if (depth > 0) return R.merge(data, { depth: depth, values: values });
-
-  var item = [data.name, values.join(' ')];
-  return { depth: depth, items: R.append(item, data.items) };
+    var name = attr.name, value = attr.value;
+    var buffer = data.buffer;
+    var currentDepth = buffer
+        ? buffer.depth
+        : 0;
+    var depth = currentDepth + count('{', value) - count('}', value);
+    if (depth < 0) {
+        throw "Extra '}' in '" + value + "' for attribute " + (name || buffer && buffer.name);
+    }
+    if (!buffer) {
+        if (depth == 0)
+            return { attrs: data.attrs.concat([attr]) };
+        if (depth > 0)
+            return {
+                buffer: {
+                    depth: depth,
+                    name: name,
+                    values: [value]
+                },
+                attrs: data.attrs
+            };
+        return data; // unreachable
+    }
+    if (name !== '')
+        throw "Missing '}' in attribute value before '" + name + "'";
+    // since name is '', this attr is a continuation of buffer
+    var values = buffer.values.concat([value]);
+    if (depth > 0)
+        return {
+            attrs: data.attrs,
+            buffer: {
+                depth: depth,
+                name: buffer.name,
+                values: values // append value to buffer
+            }
+        };
+    var item = { name: buffer.name, value: values.join(' ') };
+    return { attrs: data.attrs.concat([item]) };
 }
-
-function mapAttribute(attr) {
-  var _attr2 = _slicedToArray(attr, 2);
-
-  var name = _attr2[0];
-  var value = _attr2[1];
-
-
-  if (name === '') return expr.get(value);
-
-  var attrValue = expr.get(value) || "\"" + value + "\"";
-
-  return events[name] ? "Html.Events." + name + " " + attrValue : "Html.Attributes.attribute \"" + name + "\" " + attrValue;
+var parse = function (_a) {
+    var name = _a.name, value = _a.value;
+    return name
+        ? value.match(/^\{.*\}$/)
+            ? { type: 'expr', name: name, value: value.slice(1, value.length - 1) }
+            : { type: 'const', name: name, value: value }
+        : value.match(/^\{:.*\}$/)
+            ? { type: 'list', value: value.slice(2, value.length - 1) }
+            : value.match(/^\{.*\}$/)
+                ? { type: 'var', value: value.slice(1, value.length - 1) }
+                : { type: 'empty', value: value };
+};
+function default_1(attrs) {
+    var data = attrs
+        .map(function (a) { return a.value === '' ? { name: '', value: a.name } : a; }) // flip empty
+        .reduce(reduceAttrs, { attrs: [] });
+    if (data.buffer)
+        throw "Missing '}' in attribute value";
+    return data.attrs.map(parse);
 }
-
-function parse(attrs) {
-  return R.compose(R.map(mapAttribute), function (data) {
-    return data.depth ? missingCloseBracket(data) : data.items;
-  }, R.reduce(reduceAttrs, { depth: 0, items: [] }), R.map(function (_ref) {
-    var name = _ref.name;
-    var value = _ref.value;
-    return value === '' ? ['', name] : [name, value];
-  }))(attrs);
-}
-
-module.exports = parse;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = default_1;

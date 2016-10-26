@@ -83,6 +83,7 @@ main = Html.span [] [Html.text "Hello, elmx!"]
 
 Note that for `elmx` to work you need to import both `Html` and `Html.Attributes`.
 
+#### Attributes
 
 Attributes can be specified with:
 
@@ -137,6 +138,8 @@ showError errorAttrs = <span {:errorAttrs}>Oops!</span>
 
 (note the `:` in `{:errorAttrs}`)
 
+#### Children
+
 Elm expressions can be interpolated into HTML with:
 
 ```elm
@@ -165,6 +168,46 @@ makeList lis = <ul>{:lis}</ul>
 ```
 
 (note the `:` in `{:lis}`)
+
+#### Keyed children
+
+Keyed elements are suppored in two flavours: explicit and implicit. Explicit keyed elements require that you specify the `keyed` attribute in the list container (e.g. 'ul', 'ol', etc.), for example:
+
+```elm
+import Html.Keyed -- remember this!
+
+keyedList : List (String, Html.Html msg) -> Html.Html msg
+keyedList items = <ul keyed>{:items}</ul>
+ ```
+
+(note the `keyed` attribute in `<ul keyed>`, also note the `Html.Keyed` import)
+
+In some limited cases, `elmx` can deduce that an element is keyed because it contains at least one child with a `key` attribute, when this happens, the `keyed` attribute becomes optional:
+
+```elm
+import Html.Keyed -- remember this!
+
+keyedList : List (String, Html.Html msg) -> Html.Html msg
+keyedList items =
+   <ul>
+     <li key="i1">If on child has a key the parent is keyed</li>
+     {:items}
+   </ul>
+ ```
+
+In both cases (explicit and implicit), whenever `elmx` finds a tag with a `key` attribute, it will generate a keyed tuple instead of the normal element. That is:
+
+```elm
+<li key={toString id}>{=name}</li>
+```
+
+Translates to:
+
+```elm
+(toString id, Html.li [] [Html.text name])
+```
+
+#### Summary
 
 All together:
 
@@ -219,3 +262,7 @@ Considerations, cool stuff, limitations and workarounds
     ```
 
   * Required whitespace around `<`: since `elmx` tries to parse HTML tags, valid Elm expressions that look like HTML tags will probably confuse the `elmx` parser. For this reason is best to include some whitespace around your `<` operators.
+
+  * If you want to see more examples make sure you check the human-readable tests in the [features/](https://github.com/pzavolinsky/elmx/tree/master/features) directory. You can also try your own code in the [live cheatsheet](http://pzavolinsky.github.io/elmx).
+
+  * If you find a bug, try the repro in the [live cheatsheet](http://pzavolinsky.github.io/elmx) and [report the issue!](https://github.com/pzavolinsky/elmx/issues)

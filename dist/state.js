@@ -1,81 +1,66 @@
 "use strict";
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var R = require("ramda");
-
-var State = function () {
-  function State(parent) {
-    _classCallCheck(this, State);
-
-    this.attrBuffer = [];
-    this.state = {
-      children: [],
-      attributes: []
+var State = (function () {
+    function State() {
+        this.attrBuffer = [];
+        this.state = { type: 'root', children: [] };
+    }
+    State.prototype.isRoot = function () {
+        return this.state.type == 'root';
     };
-  }
-
-  _createClass(State, [{
-    key: "isRoot",
-    value: function isRoot() {
-      return !this.state.parent;
-    }
-  }, {
-    key: "addExpression",
-    value: function addExpression(expr) {
-      this.state.children.push({ parent: this.state, expr: expr });
-    }
-  }, {
-    key: "addCode",
-    value: function addCode(code) {
-      this.addExpression({ code: code });
-    }
-  }, {
-    key: "get",
-    value: function get() {
-      return this.state;
-    }
-  }, {
-    key: "enter",
-    value: function enter(name, attributes) {
-      var node = { name: name, parent: this.state, children: [], attributes: attributes };
-      this.state.children.push(node);
-      this.state = node;
-    }
-  }, {
-    key: "exit",
-    value: function exit() {
-      this.state = this.state.parent;
-    }
-  }, {
-    key: "attr",
-    value: function attr(name, value) {
-      this.attrBuffer.push({ name: name, value: value });
-    }
-  }, {
-    key: "popAttrs",
-    value: function popAttrs() {
-      var attrs = this.attrBuffer;
-      this.attrBuffer = [];
-      return attrs;
-    }
-  }, {
-    key: "dump",
-    value: function dump(node) {
-      var _this = this;
-
-      var padd = arguments.length <= 1 || arguments[1] === undefined ? "" : arguments[1];
-
-      if (!node) node = this.state;
-      return node.expr ? padd + JSON.stringify(node.expr) + '\n' : "" + padd + node.name + " [" + node.attributes.join(', ') + "]\n" + node.children.map(function (c) {
-        return _this.dump(c, padd + "  ");
-      }).join('');
-    }
-  }]);
-
-  return State;
-}();
-
-module.exports = State;
+    State.prototype.addExpression = function (expr) {
+        this.state.children.push({
+            type: 'expr',
+            parent: this.state,
+            expr: expr,
+            children: []
+        });
+    };
+    State.prototype.addCode = function (value) {
+        this.addExpression({ type: 'code', value: value });
+    };
+    State.prototype.get = function () {
+        return this.state;
+    };
+    State.prototype.enter = function (name, attributes) {
+        var node = {
+            type: 'view',
+            name: name,
+            parent: this.state,
+            children: [],
+            attributes: attributes
+        };
+        this.state.children.push(node);
+        this.state = node;
+    };
+    State.prototype.exit = function () {
+        if (this.state.type == 'view') {
+            this.state = this.state.parent;
+        }
+    };
+    State.prototype.attr = function (name, value) {
+        this.attrBuffer.push({ name: name, value: value });
+    };
+    State.prototype.popAttrs = function () {
+        var attrs = this.attrBuffer;
+        this.attrBuffer = [];
+        return attrs;
+    };
+    State.prototype.dump = function (node, padd) {
+        var _this = this;
+        if (padd === void 0) { padd = ''; }
+        if (!node)
+            node = this.state;
+        switch (node.type) {
+            case 'expr':
+                return padd + JSON.stringify(node.expr) + '\n';
+            case 'view':
+                return ("" + padd + node.name + " " + JSON.stringify(node.attributes) + "\n")
+                    + node.children.map(function (c) { return _this.dump(c, padd + '  '); }).join('');
+            default:
+                return node.children.map(function (c) { return _this.dump(c, padd + '  '); }).join('');
+        }
+    };
+    return State;
+}());
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = State;

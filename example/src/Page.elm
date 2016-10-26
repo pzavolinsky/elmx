@@ -16,5 +16,5 @@ main =
     Html.div ([Html.Attributes.attribute "class" "container"] ++ commonAttrs) [
       hello
       , Html.text name, Html.text " is the father of:
-      ", Html.ul [] lis
+      ", Html.ul [] (lis)
     ]
