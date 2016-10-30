@@ -190,7 +190,7 @@ import Html.Keyed -- remember this!
 keyedList : List (String, Html.Html msg) -> Html.Html msg
 keyedList items =
    <ul>
-     <li key="i1">If on child has a key the parent is keyed</li>
+     <li key="i1">If one child has a key the parent is keyed</li>
      {:items}
    </ul>
  ```
