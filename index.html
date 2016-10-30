@@ -27,6 +27,7 @@
         }
         catch (e) {
           elm = 'oops!'
+          console.log(e);
         }
         app.ports.codeCompiled.send([ id, elm ]);
       });

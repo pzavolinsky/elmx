@@ -1,1 +1,1 @@
-window.parseElmx = require('./parser');
+window.parseElmx = require('./index');
