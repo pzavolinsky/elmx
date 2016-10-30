@@ -1,9 +1,12 @@
-dist/test*
+dist/steps
 dist/bundle*
 src
-spec
+features
 example
 cheatsheet
 gulpfile.js
 *.tgz
 index.html
+.npmignore
+tsconfig.json
+tslint.json
