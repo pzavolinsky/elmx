@@ -1,5 +1,5 @@
 import Html exposing (Html)
-import Html.App as Html
+import Html.node "App" as Html
 import Html.Attributes
 import Html.Events
 
@@ -57,10 +57,10 @@ update action model =
 
 view : Model -> Html Msg
 view model =
-  Html.div [] [
-    Html.input [Html.Attributes.attribute "type" "text", Html.Attributes.attribute "placeholder" "Name", Html.Events.onInput (Name)] []
-    , Html.input [Html.Attributes.attribute "type" "password", Html.Attributes.attribute "placeholder" "Password", Html.Events.onInput (Password)] []
-    , Html.input [Html.Attributes.attribute "type" "password", Html.Attributes.attribute "placeholder" "Re-enter Password", Html.Events.onInput (PasswordAgain)] []
+  Html.node "div" [] [
+    Html.node "input" [Html.Attributes.attribute "type" "text", Html.Attributes.attribute "placeholder" "Name", Html.Events.onInput (Name)] []
+    , Html.node "input" [Html.Attributes.attribute "type" "password", Html.Attributes.attribute "placeholder" "Password", Html.Events.onInput (Password)] []
+    , Html.node "input" [Html.Attributes.attribute "type" "password", Html.Attributes.attribute "placeholder" "Re-enter Password", Html.Events.onInput (PasswordAgain)] []
     , viewValidation model
   ]
 
@@ -73,4 +73,4 @@ viewValidation model =
       else
         ("red", "Passwords do not match!")
   in
-    Html.div [Html.Attributes.attribute "style" ("color:" ++ color)] [Html.text message]
+    Html.node "div" [Html.Attributes.attribute "style" ("color:" ++ color)] [Html.text message]
