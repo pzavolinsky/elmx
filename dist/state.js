@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var State = (function () {
     function State() {
         this.attrBuffer = [];
@@ -54,7 +55,7 @@ var State = (function () {
             case 'expr':
                 return padd + JSON.stringify(node.expr) + '\n';
             case 'view':
-                return ("" + padd + node.name + " " + JSON.stringify(node.attributes) + "\n")
+                return "" + padd + node.name + " " + JSON.stringify(node.attributes) + "\n"
                     + node.children.map(function (c) { return _this.dump(c, padd + '  '); }).join('');
             default:
                 return node.children.map(function (c) { return _this.dump(c, padd + '  '); }).join('');
@@ -62,5 +63,4 @@ var State = (function () {
     };
     return State;
 }());
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = State;

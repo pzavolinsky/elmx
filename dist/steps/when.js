@@ -1,6 +1,7 @@
 "use strict";
-var parser_1 = require('../parser');
-var expression_1 = require('../expression');
+Object.defineProperty(exports, "__esModule", { value: true });
+var parser_1 = require("../parser");
+var expression_1 = require("../expression");
 var escapes = [
     [/\\n/g, '\n'],
     [/\\r/g, '\r'],
