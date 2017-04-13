@@ -55,7 +55,9 @@ function generateExpression(expr:Expression) {
 
 const getPrefix = (name:string, keyed:boolean):string =>
   !keyed
-  ? `Html.${name}`
+  ? name == 'text'
+    ? `Html.${name}`
+    : `Html.node "${name}"`
   : name == 'ul' || name == 'ol'
     ? `Html.Keyed.${name}`
     : `Html.Keyed.node "${name}"`;
