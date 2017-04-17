@@ -78,7 +78,7 @@ import Html
 import Html.Attributes
 
 main : Html.Html msg
-main = Html.span [] [Html.text "Hello, elmx!"]
+main = Html.node "span" [] [Html.text "Hello, elmx!"]
 ```
 
 Note that for `elmx` to work you need to import both `Html` and `Html.Attributes`.
@@ -204,7 +204,7 @@ In both cases (explicit and implicit), whenever `elmx` finds a tag with a `key` 
 Translates to:
 
 ```elm
-(toString id, Html.li [] [Html.text name])
+(toString id, Html.node "li" [] [Html.text name])
 ```
 
 #### Summary
