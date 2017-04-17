@@ -23,4 +23,4 @@ Scenario: Understands |>
 @ignore
 Scenario: Understands empty spans
   When processing <span />-after
-  Then the elm is Html.span [] []-after
+  Then the elm is Html.node "span" [] []-after

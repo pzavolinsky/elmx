@@ -16,6 +16,6 @@ starWars =
 main : Html.Html ()
 main =
   let
-    items = List.map (\(i, name) -> Html.li [Html.Attributes.attribute "key" (toString i)] [Html.text name]) starWars
+    items = List.map (\(i, name) -> (toString i, Html.li [] [Html.text name])) starWars
   in
-   Html.ul [] (items)
+   Html.Keyed.ul [] (items)

@@ -1,9 +1,10 @@
 "use strict";
-var htmlparser = require('htmlparser2');
-var state_1 = require('./state');
-var attributes_1 = require('./attributes');
-var expression_1 = require('./expression');
-var generator_1 = require('./generator');
+Object.defineProperty(exports, "__esModule", { value: true });
+var htmlparser = require("htmlparser2");
+var state_1 = require("./state");
+var attributes_1 = require("./attributes");
+var expression_1 = require("./expression");
+var generator_1 = require("./generator");
 var PIPE_BACKWARDS = '##!!PIPE_BACKWARDS!!##';
 var PIPE_REGEX = new RegExp(PIPE_BACKWARDS, 'g');
 function parse(elmx) {
@@ -48,6 +49,5 @@ function default_1(elmx) {
     // console.log(state.dump());
     return generate(state);
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
 ;

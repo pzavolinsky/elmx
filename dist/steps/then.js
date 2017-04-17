@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.register = function (reg, _a) {
     var get = _a.get, equal = _a.equal;
     var verboseEqual = function (actual, expected) {

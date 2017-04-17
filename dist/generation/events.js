@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var events = { onClick: true,
     onDoubleClick: true,
     onMouseDown: true,
@@ -14,7 +15,6 @@ var events = { onClick: true,
     onBlur: true,
     onFocus: true
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = function (name) {
     return !!events[name];
 };

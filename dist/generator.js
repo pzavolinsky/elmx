@@ -1,6 +1,7 @@
 "use strict";
-var list_1 = require('./generation/list');
-var events_1 = require('./generation/events');
+Object.defineProperty(exports, "__esModule", { value: true });
+var list_1 = require("./generation/list");
+var events_1 = require("./generation/events");
 var parseChildren = function (children) {
     return list_1.mergeList(children.map(function (c) {
         return (c.type == 'expr' && c.expr.type == 'list')
@@ -40,7 +41,9 @@ function generateExpression(expr) {
 }
 var getPrefix = function (name, keyed) {
     return !keyed
-        ? "Html." + name
+        ? name == 'text'
+            ? "Html." + name
+            : "Html.node \"" + name + "\""
         : name == 'ul' || name == 'ol'
             ? "Html.Keyed." + name
             : "Html.Keyed.node \"" + name + "\"";
@@ -81,5 +84,4 @@ var generate = function (node) {
             ? node.children.map(generate).join('')
             : generateView(node);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = generate;

@@ -15,7 +15,7 @@ Scenario: Html.text for {=text}
     let
       greeting = "Hi!"
     in
-      Html.span [] [Html.text greeting]
+      Html.node "span" [] [Html.text greeting]
   """
 
 Scenario: Lists
@@ -27,7 +27,7 @@ Scenario: Lists
   """
   Then the elm is
   """
-  Html.ul [Html.Attributes.attribute "class" "message-list"] (
+  Html.node "ul" [Html.Attributes.attribute "class" "message-list"] (
     List.map chatMessage model.messages
   )
   """
@@ -47,7 +47,7 @@ Scenario: List expressions as children
       let
         children = [Html.text "Hi!"]
       in
-        Html.span [] (children)
+        Html.node "span" [] (children)
     """
 
 Scenario: Singleton expressions as children
@@ -65,7 +65,7 @@ Scenario: Singleton expressions as children
       let
         child = Html.text "Hi!"
       in
-        Html.span [] [child]
+        Html.node "span" [] [child]
     """
 
 Scenario: Mixed expressions
@@ -83,5 +83,5 @@ Scenario: Mixed expressions
       let
         name = "John"
       in
-        Html.span [] [Html.text "Hi ", Html.text name, Html.text ", ", Html.i [] [Html.text "welcome!"]]
+        Html.node "span" [] [Html.text "Hi ", Html.text name, Html.text ", ", Html.node "i" [] [Html.text "welcome!"]]
     """
