@@ -35,7 +35,11 @@ function generateExpression(expr) {
         case 'whitespace':
         case 'code': return expr.value;
         case 'text': return "Html.text \"" + expr.value.replace(/"/g, '\\"') + "\"";
-        case 'textExpr': return "Html.text " + expr.value;
+        case 'textExpr':
+            var t = expr.value.trim();
+            return t.charAt(0) != '(' && t.charAt(t.length - 1) != ')' && /\s/.test(t)
+                ? "Html.text ( " + t + " )"
+                : "Html.text " + t;
     }
     throw "Invalid expression: " + JSON.stringify(expr);
 }
