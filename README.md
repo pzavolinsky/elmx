@@ -171,7 +171,7 @@ makeList lis = <ul>{:lis}</ul>
 
 #### Keyed children
 
-Keyed elements are suppored in two flavours: explicit and implicit. Explicit keyed elements require that you specify the `keyed` attribute in the list container (e.g. 'ul', 'ol', etc.), for example:
+Keyed elements are supported in two flavours: explicit and implicit. Explicit keyed elements require that you specify the `keyed` attribute in the list container (e.g. 'ul', 'ol', etc.), for example:
 
 ```elm
 import Html.Keyed -- remember this!
