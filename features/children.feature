@@ -12,6 +12,14 @@ Scenario: {=textVariable}
   When processing <span>{=textVariable}</span>
   Then the elm is Html.node "span" [] [Html.text textVariable]
 
+Scenario: {=toString what}
+  When processing <span>{=toString what}</span>
+  Then the elm is Html.node "span" [] [Html.text (toString what)]
+
+Scenario: {=(toString what)}
+  When processing <span>{=(toString what)}</span>
+  Then the elm is Html.node "span" [] [Html.text (toString what)]
+
 Scenario: {child}
   When processing <ul>{child}</ul>
   Then the elm is Html.node "ul" [] [child]

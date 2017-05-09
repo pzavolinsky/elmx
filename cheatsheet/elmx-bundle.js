@@ -252,8 +252,10 @@ function generateExpression(expr) {
         case 'text': return "Html.text \"" + expr.value.replace(/"/g, '\\"') + "\"";
         case 'textExpr':
             var t = expr.value.trim();
-            return t.charAt(0) != '(' && t.charAt(t.length - 1) != ')' && /\s/.test(t)
-                ? "Html.text ( " + t + " )"
+            return t.charAt(0) !== '('
+                && t.charAt(t.length - 1) !== ')'
+                && /\s/.test(t)
+                ? "Html.text (" + t + ")"
                 : "Html.text " + t;
     }
     throw "Invalid expression: " + JSON.stringify(expr);
@@ -3664,19 +3666,14 @@ function existsOne(test, elems){
 	return false;
 }
 
-function findAll(test, rootElems){
+function findAll(test, elems){
 	var result = [];
-	var stack = [rootElems];
-	while(stack.length){
-		var elems = stack.pop();
-		for(var i = 0, j = elems.length; i < j; i++){
-			if(!isTag(elems[i])) continue;
-			if(test(elems[i])) result.push(elems[i]);
-		}
-		while(j-- > 0){
-			if(elems[j].children.length > 0){
-				stack.push(elems[j].children);
-			}
+	for(var i = 0, j = elems.length; i < j; i++){
+		if(!isTag(elems[i])) continue;
+		if(test(elems[i])) result.push(elems[i]);
+
+		if(elems[i].children.length > 0){
+			result = result.concat(findAll(test, elems[i].children));
 		}
 	}
 	return result;
@@ -3701,8 +3698,7 @@ function getInnerHTML(elem, opts){
 
 function getText(elem){
 	if(Array.isArray(elem)) return elem.map(getText).join("");
-	if(isTag(elem)) return elem.name === "br" ? "\n" : getText(elem.children);
-	if(elem.type === ElementType.CDATA) return getText(elem.children);
+	if(isTag(elem) || elem.type === ElementType.CDATA) return getText(elem.children);
 	if(elem.type === ElementType.Text) return elem.data;
 	return "";
 }
@@ -6193,10 +6189,6 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
