@@ -221,7 +221,7 @@ main =
   let
     hello = <h1>Hello</h1>
     name = "Homer"
-    lis = map (\s -> <li>{=s}</li>) [ "Bart", "List", "Maggie" ]
+    lis = map (\s -> <li>{=s}</li>) [ "Bart", "Lisa", "Maggie" ]
     commonAttrs =
       [ title "common title"
       , align "left"
