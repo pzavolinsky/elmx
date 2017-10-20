@@ -1,5 +1,9 @@
+module Hello exposing (..)
+
 import Html
 import Html.Attributes
 
+
 main : Html.Html ()
-main = <span style="color: green">Hello, <b>elmx!</b></span>
+main =
+    <span style="color: green">Hello, <b>elmx!</b></span>

@@ -1,20 +1,29 @@
+module Page exposing (..)
+
 import Html
 import Html.Attributes exposing (title, align)
 import List exposing (map)
 
+
 main : Html.Html ()
 main =
-  let
-    hello = <h1>Hello</h1>
-    name = "Homer"
-    lis = map (\s -> <li>{=s}</li>) [ "Bart", "List", "Maggie" ]
-    commonAttrs =
-      [ title "common title"
-      , align "left"
-      ]
+    let
+        hello =
+            <h1>Hello</h1>
+
+        name =
+            "Homer"
+
+        lis =
+            [ "Bart", "List", "Maggie" ] |> map (\s -> <li>{=s}</li>)
+
+        commonAttrs =
+            [ title "common title"
+            , align "left"
+            ]
   in
-    <div class="container" {:commonAttrs}>
-      {hello}
-      {=name} is the father of:
-      <ul>{:lis}</ul>
-    </div>
+      <div class="container" {:commonAttrs}>
+        {hello}
+        <p>{=name} is the father of: </p>
+        <ul>{:lis}</ul>
+      </div>
