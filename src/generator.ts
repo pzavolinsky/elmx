@@ -47,7 +47,7 @@ function generateExpression(expr:Expression) {
   switch (expr.type) {
     case 'whitespace':
     case 'code': return expr.value;
-    case 'text': return `Html.text "${expr.value.replace(/"/g, '\\"')}"`;
+    case 'text': return `Html.text """${expr.value.replace(/"/g, '\\"')}"""`;
     case 'textExpr':
       const t = expr.value.trim();
       return t.charAt(0) !== '('
