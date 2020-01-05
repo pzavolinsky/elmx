@@ -1,7 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var list_1 = require("./generation/list");
-var events_1 = require("./generation/events");
+var list_1 = require('./generation/list');
+var events_1 = require('./generation/events');
 var parseChildren = function (children) {
     return list_1.mergeList(children.map(function (c) {
         return (c.type == 'expr' && c.expr.type == 'list')
@@ -34,7 +33,10 @@ function generateExpression(expr) {
     switch (expr.type) {
         case 'whitespace':
         case 'code': return expr.value;
-        case 'text': return "Html.text \"" + expr.value.replace(/"/g, '\\"') + "\"";
+        case 'text': {
+            var quote = expr.value.match(/\n|\r/) ? '"""' : '"';
+            return "Html.text " + quote + expr.value.replace(/"/g, '\\"') + quote;
+        }
         case 'textExpr':
             var t = expr.value.trim();
             return t.charAt(0) !== '('
@@ -90,4 +92,5 @@ var generate = function (node) {
             ? node.children.map(generate).join('')
             : generateView(node);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = generate;

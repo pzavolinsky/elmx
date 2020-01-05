@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeElm = function (name) {
     return ({ type: 'elm', name: name });
 };
@@ -52,6 +51,7 @@ var allWhitespace = function (items) {
 var allConst = function (items) {
     return items.filter(function (i) { return i.type == 'elm'; }).length == 0;
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = function (cs) {
     var nonWs = 0;
     var s = cs.map(function (c) {

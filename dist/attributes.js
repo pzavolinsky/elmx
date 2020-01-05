@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 function count(what, where) {
     var m = where.match(new RegExp(what, 'g'));
     return m ? m.length : 0;
@@ -64,4 +63,5 @@ function default_1(attrs) {
         throw "Missing '}' in attribute value";
     return data.attrs.map(parse);
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
